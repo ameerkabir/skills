@@ -1,0 +1,19 @@
+{
+  "variant": "community",
+  "projectName": "leeds-somali-community",
+  "pages": ["home", "about", "services", "news", "contact", "register"],
+  "extraPages": [],
+  "memberFields": { "add": [], "remove": [] },
+  "emailFrom": "noreply@example.org",
+  "contactTo": "hello@example.org",
+  "github": { "repo": "leeds-somali-community", "visibility": "private" },
+  "tokens": {
+    "SITE_NAME_EN": "Leeds Somali Community",
+    "SITE_NAME_AR": "الجالية الصومالية في ليدز",
+    "TAGLINE_EN": "Bringing our community together",
+    "TAGLINE_AR": "نجمع مجتمعنا معاً",
+    "DOMAIN": "example.org",
+    "ACCENT": "#0f766e",
+    "EMDASH_VERSION": "1.5.0"
+  }
+}

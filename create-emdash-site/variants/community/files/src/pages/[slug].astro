@@ -1,0 +1,28 @@
+---
+import { getEmDashEntry, getSeoMeta, decodeSlug, getSiteSettings } from "emdash";
+import { PortableText } from "emdash/ui";
+import Base from "../layouts/Base.astro";
+import { resolveSiteIdentity } from "../utils/site-identity";
+
+const locale = Astro.locals.locale;
+const slug = decodeSlug(Astro.params.slug);
+if (!slug) {
+	return Astro.rewrite("/404");
+}
+const { entry: page, cacheHint } = await getEmDashEntry("pages", slug, { locale });
+if (!page) {
+	return Astro.rewrite("/404");
+}
+if (Astro.cache?.enabled) {
+	Astro.cache.set(cacheHint);
+}
+const { siteTitle } = resolveSiteIdentity(await getSiteSettings(), locale);
+const seo = getSeoMeta(page, { siteTitle, siteUrl: Astro.url.origin, path: `/${slug}` });
+---
+
+<Base title={page.data.title} description={seo.description} canonical={seo.canonical} content={{ collection: "pages", id: page.data.id, slug }}>
+	<article class="prose">
+		<h1 {...page.edit.title}>{page.data.title}</h1>
+		<PortableText value={page.data.content} />
+	</article>
+</Base>

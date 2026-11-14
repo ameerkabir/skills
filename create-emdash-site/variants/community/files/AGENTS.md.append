@@ -1,0 +1,10 @@
+
+## This site (%%SITE_NAME_EN%%)
+
+Bilingual (`en` default, `ar` under `/ar/`) community site built from the `create-emdash-site` community variant. Architecture: `docs/architecture.md`.
+
+- **Locale routing:** `src/middleware.ts` rewrites `/ar/x` → `/x` and sets `Astro.locals.locale`; there is no `src/pages/ar/`. Pass `Astro.locals.locale` to every EmDash query and wrap every internal href in `localizedHref()`.
+- **Microcopy:** page text lives in the `ui_strings` collection (`getUiStrings(locale)`), always read with a literal fallback: `t["contact.submit"] ?? "Send message"`.
+- **Two kinds of people:** *EmDash users* sign in to `/_emdash/admin` (staff, by invite). *Members* are rows in the `members` collection created by the public `/register` form; they never log in. Never create Subscriber accounts: EmDash grants `content:read` from Subscriber up, which exposes member PII.
+- **Forms:** `/register` and `/contact` POST to the `site-forms` plugin (`plugins/site-forms`), which validates, rate-limits via plugin KV, and creates entries through `ctx.content`. The member form fields live in `plugins/site-forms/src/member-fields.ts`; its test fails if `seed/seed.json` drifts.
+- **Schema changes on a live site:** edit `seed/seed.json`, then `scripts/sync-schema.mjs` (CI) adds what's missing. Seed edits alone never change an existing database.

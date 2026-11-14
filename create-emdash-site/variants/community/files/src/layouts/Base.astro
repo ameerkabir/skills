@@ -1,0 +1,212 @@
+---
+import { Font } from "astro:assets";
+import { getMenu, getSiteSettings } from "emdash";
+import { EmDashHead, EmDashBodyStart, EmDashBodyEnd } from "emdash/ui";
+import { createPublicPageContext } from "emdash/page";
+import LanguageSwitcher from "../components/LanguageSwitcher.astro";
+import { resolveSiteIdentity } from "../utils/site-identity";
+import { getUiStrings } from "../utils/ui-strings";
+import { localizedHref } from "../utils/localized-href";
+import { isRtl, stripLocalePrefix } from "../utils/locales";
+import "../styles/theme.css";
+
+interface Props {
+	title: string;
+	description?: string | null;
+	image?: string | null;
+	canonical?: string | null;
+	/** Set on content pages: drives hreflang alternates and the language switcher. */
+	content?: { collection: string; id: string; slug?: string | null };
+	/** Route prefix of `content`'s collection, e.g. "/posts". "" for top-level pages. */
+	routePrefix?: string;
+}
+
+const { title, description, image, canonical, content, routePrefix = "" } = Astro.props;
+const locale = Astro.locals.locale;
+const t = await getUiStrings(locale);
+const { siteTitle, siteTagline, siteLogo } = resolveSiteIdentity(await getSiteSettings(), locale, t);
+const fullTitle = title === siteTitle ? title : `${title} — ${siteTitle}`;
+const pageDescription = description ?? siteTagline;
+
+const menu = await getMenu("primary", { locale });
+const footerMenu = await getMenu("footer", { locale });
+const currentPath = stripLocalePrefix(Astro.url.pathname);
+
+const pageCtx = createPublicPageContext({
+	Astro,
+	kind: content ? "content" : "custom",
+	pageType: "website",
+	title: fullTitle,
+	pageTitle: title,
+	description: pageDescription,
+	canonical,
+	image,
+	content,
+	siteName: siteTitle,
+});
+---
+
+<!doctype html>
+<html lang={locale} dir={isRtl(locale) ? "rtl" : "ltr"}>
+	<head>
+		<meta charset="UTF-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<link rel="icon" href="/favicon.svg" />
+		<title>{fullTitle}</title>
+		{pageDescription && <meta name="description" content={pageDescription} />}
+		{canonical && <link rel="canonical" href={canonical} />}
+		<Font cssVariable="--font-body" />
+		<Font cssVariable="--font-arabic" />
+		<EmDashHead page={pageCtx} />
+	</head>
+	<body>
+		<EmDashBodyStart page={pageCtx} />
+		<header class="site-header">
+			<div class="site-header__inner">
+				<a href={localizedHref(locale, "/")} class="site-header__brand">
+					{siteLogo?.url && <img src={siteLogo.url} alt={siteLogo.alt || siteTitle} class="site-header__logo" width="40" height="40" />}
+					<span>{siteTitle}</span>
+				</a>
+				<button type="button" class="nav-toggle" popovertarget="site-menu" aria-label={t["nav.menu"] ?? "Menu"}>
+					<svg viewBox="0 0 24 24" width="22" height="22" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
+						<line x1="3" y1="6" x2="21" y2="6" /><line x1="3" y1="12" x2="21" y2="12" /><line x1="3" y1="18" x2="21" y2="18" />
+					</svg>
+				</button>
+				<nav id="site-menu" class="site-nav" popover>
+					{menu?.items.map((item) => (
+						<a
+							href={localizedHref(locale, item.url)}
+							target={item.target}
+							class:list={[item.url === "/register" ? "site-nav__cta" : "site-nav__link", { "is-active": currentPath === item.url }]}
+						>
+							{item.label}
+						</a>
+					))}
+					<LanguageSwitcher collection={content?.collection} entryId={content?.id} path={currentPath} routePrefix={routePrefix} />
+				</nav>
+			</div>
+		</header>
+
+		<main class="site-main">
+			<slot />
+		</main>
+
+		<footer class="site-footer">
+			<div class="site-footer__inner">
+				<p class="site-footer__name">{siteTitle}</p>
+				<p class="site-footer__tagline">{siteTagline}</p>
+				{footerMenu?.items.length ? (
+					<p class="site-footer__links">
+						{footerMenu.items.map((item) => <a href={localizedHref(locale, item.url)}>{item.label}</a>)}
+					</p>
+				) : null}
+				<p class="site-footer__copy">© {new Date().getFullYear()} {siteTitle}. {t["footer.rights"] ?? "All rights reserved."}</p>
+			</div>
+		</footer>
+		<EmDashBodyEnd page={pageCtx} />
+	</body>
+</html>
+
+<style>
+	.site-header {
+		position: sticky;
+		top: 0;
+		z-index: 10;
+		background: var(--color-bg);
+		border-bottom: 1px solid var(--color-border);
+	}
+	.site-header__inner {
+		max-width: var(--wide-width);
+		margin: 0 auto;
+		padding: 0 1.25rem;
+		height: 64px;
+		display: flex;
+		align-items: center;
+		gap: 1rem;
+	}
+	.site-header__brand {
+		display: flex;
+		align-items: center;
+		gap: 0.625rem;
+		font-weight: 700;
+		color: var(--color-text);
+		text-decoration: none;
+	}
+	.site-header__logo { height: 40px; width: auto; }
+
+	/* Mobile: the nav is a Popover API panel toggled by the button (no JS). */
+	.nav-toggle {
+		margin-inline-start: auto;
+		display: inline-flex;
+		align-items: center;
+		justify-content: center;
+		width: 40px;
+		height: 40px;
+		border: 1px solid var(--color-border);
+		border-radius: var(--radius);
+		background: var(--color-bg);
+		color: var(--color-text);
+		cursor: pointer;
+	}
+	.site-nav:popover-open {
+		display: flex;
+		flex-direction: column;
+		gap: 0.25rem;
+		position: fixed;
+		inset: auto;
+		top: 64px;
+		inset-inline-end: 0.75rem;
+		margin: 0;
+		width: min(16rem, calc(100vw - 1.5rem));
+		padding: 0.5rem;
+		border: 1px solid var(--color-border);
+		border-radius: var(--radius);
+		background: var(--color-bg);
+		box-shadow: var(--shadow-md);
+	}
+	.site-nav__link {
+		padding: 0.4rem 0.75rem;
+		border-radius: var(--radius);
+		color: var(--color-text-muted);
+		text-decoration: none;
+	}
+	.site-nav__link:hover, .site-nav__link.is-active { color: var(--color-text); background: var(--color-surface); }
+	.site-nav__cta {
+		padding: 0.4rem 0.9rem;
+		border-radius: var(--radius);
+		font-weight: 600;
+		background: var(--color-accent);
+		color: var(--color-on-accent);
+		text-decoration: none;
+	}
+	@media (min-width: 820px) {
+		.nav-toggle { display: none; }
+		.site-nav, .site-nav:popover-open {
+			display: flex;
+			flex-direction: row;
+			align-items: center;
+			gap: 0.25rem;
+			position: static;
+			margin-inline-start: auto;
+			width: auto;
+			padding: 0;
+			border: 0;
+			background: none;
+			box-shadow: none;
+		}
+	}
+
+	.site-main {
+		width: 100%;
+		max-width: var(--wide-width);
+		margin: 0 auto;
+		padding: 2.5rem 1.25rem 4rem;
+	}
+
+	.site-footer { border-top: 1px solid var(--color-border); background: var(--color-surface); }
+	.site-footer__inner { max-width: var(--wide-width); margin: 0 auto; padding: 2rem 1.25rem; }
+	.site-footer__name { font-weight: 700; margin-bottom: 0.25rem; }
+	.site-footer__tagline, .site-footer__copy { color: var(--color-text-muted); font-size: 0.9375rem; }
+	.site-footer__links { display: flex; flex-wrap: wrap; gap: 1rem; margin: 1rem 0; }
+	.site-footer__copy { font-size: 0.8125rem; margin-top: 1rem; }
+</style>

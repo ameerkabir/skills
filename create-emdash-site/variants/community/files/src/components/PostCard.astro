@@ -1,0 +1,27 @@
+---
+import { Image } from "emdash/ui";
+import { localizedHref } from "../utils/localized-href";
+
+interface Props {
+	post: { id: string; data: { title: string; excerpt?: string; featured_image?: any; publishedAt?: Date | null } };
+}
+
+const { post } = Astro.props;
+const locale = Astro.locals.locale;
+---
+<article class="card post-card">
+	{post.data.featured_image && <Image image={post.data.featured_image} />}
+	<h3><a href={localizedHref(locale, `/posts/${post.id}`)}>{post.data.title}</a></h3>
+	{post.data.publishedAt && (
+		<time datetime={post.data.publishedAt.toISOString()}>
+			{post.data.publishedAt.toLocaleDateString(locale, { year: "numeric", month: "long", day: "numeric" })}
+		</time>
+	)}
+	{post.data.excerpt && <p>{post.data.excerpt}</p>}
+</article>
+
+<style>
+	.post-card h3 { margin-top: 0.75rem; }
+	.post-card h3 a { color: var(--color-text); text-decoration: none; }
+	.post-card time { display: block; color: var(--color-text-muted); font-size: 0.875rem; margin-bottom: 0.5rem; }
+</style>

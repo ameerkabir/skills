@@ -1,0 +1,45 @@
+---
+import { MEMBER_FIELDS } from "site-forms/member-fields";
+import Base from "../layouts/Base.astro";
+import { getUiStrings } from "../utils/ui-strings";
+import { localizedHref } from "../utils/localized-href";
+
+const locale = Astro.locals.locale;
+const t = await getUiStrings(locale);
+const lang = locale in MEMBER_FIELDS[0].label ? (locale as keyof (typeof MEMBER_FIELDS)[0]["label"]) : "en";
+const inputType = { string: "text", email: "email", tel: "tel", date: "date" } as const;
+---
+
+<Base title={t["register.heading"] ?? "Become a member"}>
+	<h1>{t["register.heading"] ?? "Become a member"}</h1>
+	<p>{t["register.intro"] ?? "Fill in the form to register. Fields marked * are required."}</p>
+	<form
+		class="form"
+		data-endpoint="/_emdash/api/plugins/site-forms/register"
+		data-success-href={localizedHref(locale, "/register/success")}
+		data-msg-error={t["register.error"] ?? "Please check the form and try again."}
+		data-msg-rate-limited={t["form.rate_limited"] ?? "Too many submissions. Please try again later."}
+	>
+		{MEMBER_FIELDS.map((field) => (
+			<label>
+				{field.label[lang]}{field.required && " *"}
+				{field.type === "select" ? (
+					<select name={field.slug} required={field.required}>
+						<option value="">{t["form.select"] ?? "Select…"}</option>
+						{field.options?.map((o) => <option value={o.value}>{o.label[lang]}</option>)}
+					</select>
+				) : field.type === "text" ? (
+					<textarea name={field.slug} rows="3" required={field.required} dir={field.dir} />
+				) : (
+					<input name={field.slug} type={inputType[field.type]} required={field.required} dir={field.dir} />
+				)}
+			</label>
+		))}
+		<div data-notice hidden role="status"></div>
+		<button type="submit" class="btn btn--primary">{t["register.submit"] ?? "Register"}</button>
+	</form>
+</Base>
+
+<script>
+	import "../scripts/form-submit";
+</script>

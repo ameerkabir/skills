@@ -1,0 +1,50 @@
+---
+import { getTranslations } from "emdash";
+import { getRelativeLocaleUrl } from "astro:i18n";
+import { DEFAULT_LOCALE, LOCALE_LABELS, otherLocale as getOtherLocale } from "../utils/locales";
+
+interface Props {
+	/** Pass both on a content page so the link targets the translation's own slug. */
+	collection?: string;
+	entryId?: string;
+	/** Path without the locale prefix, e.g. "/about". */
+	path: string;
+	/** Collection route prefix for content pages, e.g. "/posts" for posts. "" for top-level pages. */
+	routePrefix?: string;
+}
+
+const { collection, entryId, path, routePrefix = "" } = Astro.props;
+const locale = Astro.locals.locale ?? DEFAULT_LOCALE;
+const target = getOtherLocale(locale);
+
+let targetPath = path;
+if (collection && entryId) {
+	const { translations } = await getTranslations(collection, entryId);
+	const match = translations.find((t) => t.locale === target && t.status === "published" && t.slug);
+	if (match) {
+		targetPath = `${routePrefix}/${match.slug}`;
+	}
+}
+const href = getRelativeLocaleUrl(target, targetPath);
+const label = LOCALE_LABELS[target];
+---
+<a href={href} hreflang={target} lang={target} class="lang-switcher">{label}</a>
+
+<style>
+	.lang-switcher {
+		display: inline-flex;
+		align-items: center;
+		padding: 0.375rem 0.75rem;
+		border-radius: 999px;
+		font-size: 0.875rem;
+		font-weight: 600;
+		color: var(--color-text);
+		background: var(--color-surface);
+		border: 1px solid var(--color-border);
+		text-decoration: none;
+	}
+	.lang-switcher:hover {
+		border-color: var(--color-accent);
+		color: var(--color-accent);
+	}
+</style>

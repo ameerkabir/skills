@@ -1,0 +1,31 @@
+---
+import Base from "../layouts/Base.astro";
+import { getUiStrings } from "../utils/ui-strings";
+
+const locale = Astro.locals.locale;
+const t = await getUiStrings(locale);
+---
+
+<Base title={t["contact.heading"] ?? "Contact us"}>
+	<h1>{t["contact.heading"] ?? "Contact us"}</h1>
+	<p>{t["contact.intro"] ?? "Send us a message and we will get back to you."}</p>
+	<form
+		class="form"
+		data-endpoint="/_emdash/api/plugins/site-forms/contact"
+		data-msg-ok={t["contact.success"] ?? "Thank you. Your message has been sent."}
+		data-msg-error={t["contact.error"] ?? "Something went wrong. Please try again."}
+		data-msg-rate-limited={t["form.rate_limited"] ?? "Too many submissions. Please try again later."}
+	>
+		<label>{t["contact.name"] ?? "Name"} *<input name="name" required autocomplete="name" /></label>
+		<label>{t["contact.email"] ?? "Email"} *<input name="email" type="email" required autocomplete="email" /></label>
+		<label>{t["contact.phone"] ?? "Phone (optional)"}<input name="phone" type="tel" autocomplete="tel" /></label>
+		<label>{t["contact.message"] ?? "Message"} *<textarea name="message" rows="6" required></textarea></label>
+		<input class="hp" name="website" tabindex="-1" autocomplete="off" aria-hidden="true" />
+		<div data-notice hidden role="status"></div>
+		<button type="submit" class="btn btn--primary">{t["contact.submit"] ?? "Send message"}</button>
+	</form>
+</Base>
+
+<script>
+	import "../scripts/form-submit";
+</script>

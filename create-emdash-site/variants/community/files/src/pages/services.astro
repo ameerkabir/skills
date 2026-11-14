@@ -1,0 +1,37 @@
+---
+import { getEmDashCollection } from "emdash";
+import { Image, PortableText } from "emdash/ui";
+import Base from "../layouts/Base.astro";
+import { getUiStrings } from "../utils/ui-strings";
+
+const locale = Astro.locals.locale;
+const t = await getUiStrings(locale);
+const { entries: services, cacheHint } = await getEmDashCollection("services", {
+	locale,
+	orderBy: { sort_order: "asc" },
+});
+if (Astro.cache?.enabled) {
+	Astro.cache.set(cacheHint);
+}
+---
+
+<Base title={t["services.heading"] ?? "Our services"}>
+	<h1>{t["services.heading"] ?? "Our services"}</h1>
+	<p class="lead">{t["services.intro"] ?? "How we support our community."}</p>
+	<div class="card-grid">
+		{services.map((service) => (
+			<article class="card" id={service.id}>
+				{service.data.image && <Image image={service.data.image} />}
+				<h2 {...service.edit.title}>{service.data.title}</h2>
+				{service.data.summary && <p class="summary">{service.data.summary}</p>}
+				<PortableText value={service.data.content} />
+			</article>
+		))}
+	</div>
+</Base>
+
+<style>
+	.lead { color: var(--color-text-muted); margin-bottom: 2rem; }
+	.card h2 { font-size: 1.25rem; }
+	.summary { font-weight: 600; }
+</style>

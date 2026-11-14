@@ -1,0 +1,1585 @@
+{
+	"$schema": "https://emdashcms.com/seed.schema.json",
+	"version": "1",
+	"defaultLocale": "en",
+	"meta": {
+		"name": "%%SITE_NAME_EN%%",
+		"description": "Bilingual (en/ar) community site: home, about, services, news, contact, member registration."
+	},
+	"settings": {
+		"title": "%%SITE_NAME_EN%%",
+		"tagline": "%%TAGLINE_EN%%"
+	},
+	"collections": [
+		{
+			"slug": "pages",
+			"label": "Pages",
+			"labelSingular": "Page",
+			"supports": [
+				"drafts",
+				"revisions",
+				"search",
+				"seo"
+			],
+			"fields": [
+				{
+					"slug": "title",
+					"label": "Title",
+					"type": "string",
+					"required": true,
+					"searchable": true
+				},
+				{
+					"slug": "content",
+					"label": "Content",
+					"type": "portableText",
+					"searchable": true
+				}
+			]
+		},
+		{
+			"slug": "posts",
+			"label": "News",
+			"labelSingular": "News item",
+			"supports": [
+				"drafts",
+				"revisions",
+				"search",
+				"seo"
+			],
+			"fields": [
+				{
+					"slug": "title",
+					"label": "Title",
+					"type": "string",
+					"required": true,
+					"searchable": true
+				},
+				{
+					"slug": "featured_image",
+					"label": "Featured image",
+					"type": "image"
+				},
+				{
+					"slug": "excerpt",
+					"label": "Excerpt",
+					"type": "text"
+				},
+				{
+					"slug": "content",
+					"label": "Content",
+					"type": "portableText",
+					"searchable": true
+				}
+			]
+		},
+		{
+			"slug": "services",
+			"label": "Services",
+			"labelSingular": "Service",
+			"icon": "briefcase",
+			"supports": [
+				"drafts",
+				"revisions",
+				"search"
+			],
+			"fields": [
+				{
+					"slug": "title",
+					"label": "Title",
+					"type": "string",
+					"required": true,
+					"searchable": true
+				},
+				{
+					"slug": "summary",
+					"label": "Summary",
+					"type": "text"
+				},
+				{
+					"slug": "image",
+					"label": "Image",
+					"type": "image"
+				},
+				{
+					"slug": "content",
+					"label": "Details",
+					"type": "portableText",
+					"searchable": true
+				},
+				{
+					"slug": "sort_order",
+					"label": "Sort order",
+					"type": "integer",
+					"translatable": false,
+					"description": "Lower numbers show first."
+				}
+			]
+		},
+		{
+			"slug": "homepage",
+			"label": "Homepage",
+			"labelSingular": "Homepage",
+			"icon": "home",
+			"supports": [
+				"drafts"
+			],
+			"description": "One entry per locale (slug `home`): hero, intro cards and call to action.",
+			"fields": [
+				{
+					"slug": "title",
+					"label": "Internal title",
+					"type": "string",
+					"required": true
+				},
+				{
+					"slug": "hero_kicker",
+					"label": "Hero kicker",
+					"type": "string"
+				},
+				{
+					"slug": "hero_heading",
+					"label": "Hero heading",
+					"type": "string"
+				},
+				{
+					"slug": "hero_body",
+					"label": "Hero text",
+					"type": "text"
+				},
+				{
+					"slug": "hero_image",
+					"label": "Hero image",
+					"type": "image",
+					"translatable": false
+				},
+				{
+					"slug": "intro_card1_title",
+					"label": "Intro card 1 title",
+					"type": "string"
+				},
+				{
+					"slug": "intro_card1_body",
+					"label": "Intro card 1 text",
+					"type": "text"
+				},
+				{
+					"slug": "intro_card2_title",
+					"label": "Intro card 2 title",
+					"type": "string"
+				},
+				{
+					"slug": "intro_card2_body",
+					"label": "Intro card 2 text",
+					"type": "text"
+				},
+				{
+					"slug": "intro_card3_title",
+					"label": "Intro card 3 title",
+					"type": "string"
+				},
+				{
+					"slug": "intro_card3_body",
+					"label": "Intro card 3 text",
+					"type": "text"
+				},
+				{
+					"slug": "cta_heading",
+					"label": "CTA heading",
+					"type": "string"
+				},
+				{
+					"slug": "cta_body",
+					"label": "CTA text",
+					"type": "text"
+				}
+			]
+		},
+		{
+			"slug": "ui_strings",
+			"label": "UI Strings",
+			"labelSingular": "UI String",
+			"icon": "languages",
+			"supports": [
+				"search"
+			],
+			"description": "Translatable site microcopy (labels, buttons, messages) keyed by a stable id.",
+			"fields": [
+				{
+					"slug": "title",
+					"label": "Title",
+					"type": "string",
+					"required": true
+				},
+				{
+					"slug": "key",
+					"label": "Key",
+					"type": "string",
+					"required": true,
+					"unique": true,
+					"translatable": false,
+					"searchable": true
+				},
+				{
+					"slug": "text",
+					"label": "Text",
+					"type": "text",
+					"required": true
+				}
+			]
+		},
+		{
+			"slug": "members",
+			"label": "Members",
+			"labelSingular": "Member",
+			"icon": "users",
+			"supports": [
+				"search"
+			],
+			"description": "Community members registered through the public form. Admin-only: never grant Subscriber accounts on this site.",
+			"fields": [
+				{
+					"slug": "title",
+					"label": "Full name",
+					"type": "string",
+					"required": true,
+					"searchable": true
+				},
+				{
+					"slug": "full_name_ar",
+					"label": "Full name (Arabic)",
+					"type": "string"
+				},
+				{
+					"slug": "email",
+					"label": "Email",
+					"type": "string",
+					"searchable": true
+				},
+				{
+					"slug": "phone",
+					"label": "Phone",
+					"type": "string",
+					"required": true
+				},
+				{
+					"slug": "date_of_birth",
+					"label": "Date of birth",
+					"type": "datetime"
+				},
+				{
+					"slug": "gender",
+					"label": "Gender",
+					"type": "select",
+					"validation": {
+						"options": [
+							"male",
+							"female",
+							"prefer_not_to_say"
+						]
+					}
+				},
+				{
+					"slug": "city",
+					"label": "City",
+					"type": "string",
+					"required": true,
+					"searchable": true
+				},
+				{
+					"slug": "address",
+					"label": "Address",
+					"type": "text"
+				},
+				{
+					"slug": "registration_status",
+					"label": "Registration status",
+					"type": "select",
+					"required": true,
+					"defaultValue": "pending",
+					"validation": {
+						"options": [
+							"pending",
+							"approved",
+							"rejected"
+						]
+					}
+				},
+				{
+					"slug": "notes",
+					"label": "Admin notes",
+					"type": "text"
+				}
+			]
+		},
+		{
+			"slug": "contact_messages",
+			"label": "Contact messages",
+			"labelSingular": "Contact message",
+			"icon": "mail",
+			"supports": [
+				"search"
+			],
+			"fields": [
+				{
+					"slug": "title",
+					"label": "Name",
+					"type": "string",
+					"required": true,
+					"searchable": true
+				},
+				{
+					"slug": "email",
+					"label": "Email",
+					"type": "string",
+					"required": true,
+					"searchable": true
+				},
+				{
+					"slug": "phone",
+					"label": "Phone",
+					"type": "string"
+				},
+				{
+					"slug": "message",
+					"label": "Message",
+					"type": "text",
+					"required": true,
+					"searchable": true
+				},
+				{
+					"slug": "handled",
+					"label": "Handled",
+					"type": "boolean"
+				}
+			]
+		}
+	],
+	"taxonomies": [
+		{
+			"name": "category",
+			"label": "Categories",
+			"labelSingular": "Category",
+			"hierarchical": true,
+			"collections": [
+				"posts"
+			],
+			"terms": [
+				{
+					"id": "category-announcements",
+					"slug": "announcements",
+					"label": "Announcements",
+					"locale": "en"
+				},
+				{
+					"id": "category-announcements-ar",
+					"slug": "announcements",
+					"label": "إعلانات",
+					"locale": "ar",
+					"translationOf": "category-announcements"
+				},
+				{
+					"id": "category-events",
+					"slug": "events",
+					"label": "Events",
+					"locale": "en"
+				},
+				{
+					"id": "category-events-ar",
+					"slug": "events",
+					"label": "فعاليات",
+					"locale": "ar",
+					"translationOf": "category-events"
+				}
+			]
+		},
+		{
+			"name": "tag",
+			"label": "Tags",
+			"labelSingular": "Tag",
+			"hierarchical": false,
+			"collections": [
+				"posts"
+			],
+			"terms": [
+				{
+					"id": "tag-community",
+					"slug": "community",
+					"label": "Community",
+					"locale": "en"
+				},
+				{
+					"id": "tag-community-ar",
+					"slug": "community",
+					"label": "المجتمع",
+					"locale": "ar",
+					"translationOf": "tag-community"
+				}
+			]
+		}
+	],
+	"menus": [
+		{
+			"id": "primary",
+			"name": "primary",
+			"label": "Primary navigation",
+			"locale": "en",
+			"items": [
+				{
+					"type": "custom",
+					"label": "Home",
+					"url": "/"
+				},
+				{
+					"type": "custom",
+					"label": "About",
+					"url": "/about"
+				},
+				{
+					"type": "custom",
+					"label": "Services",
+					"url": "/services"
+				},
+				{
+					"type": "custom",
+					"label": "News",
+					"url": "/posts"
+				},
+				{
+					"type": "custom",
+					"label": "Contact",
+					"url": "/contact"
+				},
+				{
+					"type": "custom",
+					"label": "Join",
+					"url": "/register"
+				}
+			]
+		},
+		{
+			"id": "primary-ar",
+			"name": "primary",
+			"label": "التنقل الرئيسي",
+			"locale": "ar",
+			"translationOf": "primary",
+			"items": [
+				{
+					"type": "custom",
+					"label": "الرئيسية",
+					"url": "/"
+				},
+				{
+					"type": "custom",
+					"label": "من نحن",
+					"url": "/about"
+				},
+				{
+					"type": "custom",
+					"label": "خدماتنا",
+					"url": "/services"
+				},
+				{
+					"type": "custom",
+					"label": "الأخبار",
+					"url": "/posts"
+				},
+				{
+					"type": "custom",
+					"label": "اتصل بنا",
+					"url": "/contact"
+				},
+				{
+					"type": "custom",
+					"label": "انضم",
+					"url": "/register"
+				}
+			]
+		},
+		{
+			"id": "footer",
+			"name": "footer",
+			"label": "Footer",
+			"locale": "en",
+			"items": [
+				{
+					"type": "custom",
+					"label": "About",
+					"url": "/about"
+				},
+				{
+					"type": "custom",
+					"label": "Contact",
+					"url": "/contact"
+				},
+				{
+					"type": "custom",
+					"label": "Become a member",
+					"url": "/register"
+				}
+			]
+		},
+		{
+			"id": "footer-ar",
+			"name": "footer",
+			"label": "التذييل",
+			"locale": "ar",
+			"translationOf": "footer",
+			"items": [
+				{
+					"type": "custom",
+					"label": "من نحن",
+					"url": "/about"
+				},
+				{
+					"type": "custom",
+					"label": "اتصل بنا",
+					"url": "/contact"
+				},
+				{
+					"type": "custom",
+					"label": "انضم كعضو",
+					"url": "/register"
+				}
+			]
+		}
+	],
+	"content": {
+		"pages": [
+			{
+				"id": "about",
+				"slug": "about",
+				"locale": "en",
+				"status": "published",
+				"data": {
+					"title": "About us",
+					"content": [
+						{
+							"_type": "block",
+							"_key": "k0",
+							"style": "normal",
+							"children": [
+								{
+									"_type": "span",
+									"_key": "k0s",
+									"text": "%%SITE_NAME_EN%% is a community organisation. Replace this text with your story in the admin."
+								}
+							]
+						}
+					]
+				}
+			},
+			{
+				"id": "about-ar",
+				"slug": "about",
+				"locale": "ar",
+				"translationOf": "about",
+				"status": "published",
+				"data": {
+					"title": "من نحن",
+					"content": [
+						{
+							"_type": "block",
+							"_key": "k0",
+							"style": "normal",
+							"children": [
+								{
+									"_type": "span",
+									"_key": "k0s",
+									"text": "%%SITE_NAME_AR%% منظمة مجتمعية. استبدل هذا النص بقصتكم من لوحة التحكم."
+								}
+							]
+						}
+					]
+				}
+			}
+		],
+		"homepage": [
+			{
+				"id": "home",
+				"slug": "home",
+				"locale": "en",
+				"status": "published",
+				"data": {
+					"title": "Homepage",
+					"hero_kicker": "%%SITE_NAME_AR%%",
+					"hero_heading": "%%SITE_NAME_EN%%",
+					"hero_body": "%%TAGLINE_EN%%",
+					"intro_card1_title": "Community",
+					"intro_card1_body": "Bringing our members together across the country.",
+					"intro_card2_title": "Support",
+					"intro_card2_body": "Practical help and advice when members need it.",
+					"intro_card3_title": "Culture",
+					"intro_card3_body": "Celebrating and passing on our heritage.",
+					"cta_heading": "Join the community",
+					"cta_body": "Registration is free and takes a few minutes."
+				}
+			},
+			{
+				"id": "home-ar",
+				"slug": "home",
+				"locale": "ar",
+				"translationOf": "home",
+				"status": "published",
+				"data": {
+					"title": "الصفحة الرئيسية",
+					"hero_kicker": "%%SITE_NAME_EN%%",
+					"hero_heading": "%%SITE_NAME_AR%%",
+					"hero_body": "%%TAGLINE_AR%%",
+					"intro_card1_title": "المجتمع",
+					"intro_card1_body": "نجمع أعضاءنا في كل أنحاء البلاد.",
+					"intro_card2_title": "الدعم",
+					"intro_card2_body": "مساعدة ومشورة عملية عندما يحتاجها الأعضاء.",
+					"intro_card3_title": "الثقافة",
+					"intro_card3_body": "نحتفي بتراثنا وننقله للأجيال.",
+					"cta_heading": "انضم إلى المجتمع",
+					"cta_body": "التسجيل مجاني ويستغرق بضع دقائق."
+				}
+			}
+		],
+		"services": [
+			{
+				"id": "svc-advice",
+				"slug": "advice",
+				"locale": "en",
+				"status": "published",
+				"data": {
+					"title": "Advice & guidance",
+					"summary": "Help with everyday questions.",
+					"sort_order": 1,
+					"content": [
+						{
+							"_type": "block",
+							"_key": "k0",
+							"style": "normal",
+							"children": [
+								{
+									"_type": "span",
+									"_key": "k0s",
+									"text": "Describe this service."
+								}
+							]
+						}
+					]
+				}
+			},
+			{
+				"id": "svc-advice-ar",
+				"slug": "advice",
+				"locale": "ar",
+				"translationOf": "svc-advice",
+				"status": "published",
+				"data": {
+					"title": "الاستشارات والإرشاد",
+					"summary": "مساعدة في الأسئلة اليومية.",
+					"sort_order": 1,
+					"content": [
+						{
+							"_type": "block",
+							"_key": "k0",
+							"style": "normal",
+							"children": [
+								{
+									"_type": "span",
+									"_key": "k0s",
+									"text": "صف هذه الخدمة."
+								}
+							]
+						}
+					]
+				}
+			},
+			{
+				"id": "svc-events",
+				"slug": "events",
+				"locale": "en",
+				"status": "published",
+				"data": {
+					"title": "Community events",
+					"summary": "Gatherings, celebrations and meetings.",
+					"sort_order": 2,
+					"content": [
+						{
+							"_type": "block",
+							"_key": "k0",
+							"style": "normal",
+							"children": [
+								{
+									"_type": "span",
+									"_key": "k0s",
+									"text": "Describe this service."
+								}
+							]
+						}
+					]
+				}
+			},
+			{
+				"id": "svc-events-ar",
+				"slug": "events",
+				"locale": "ar",
+				"translationOf": "svc-events",
+				"status": "published",
+				"data": {
+					"title": "الفعاليات المجتمعية",
+					"summary": "لقاءات واحتفالات واجتماعات.",
+					"sort_order": 2,
+					"content": [
+						{
+							"_type": "block",
+							"_key": "k0",
+							"style": "normal",
+							"children": [
+								{
+									"_type": "span",
+									"_key": "k0s",
+									"text": "صف هذه الخدمة."
+								}
+							]
+						}
+					]
+				}
+			},
+			{
+				"id": "svc-youth",
+				"slug": "youth",
+				"locale": "en",
+				"status": "published",
+				"data": {
+					"title": "Youth & education",
+					"summary": "Programmes for young people.",
+					"sort_order": 3,
+					"content": [
+						{
+							"_type": "block",
+							"_key": "k0",
+							"style": "normal",
+							"children": [
+								{
+									"_type": "span",
+									"_key": "k0s",
+									"text": "Describe this service."
+								}
+							]
+						}
+					]
+				}
+			},
+			{
+				"id": "svc-youth-ar",
+				"slug": "youth",
+				"locale": "ar",
+				"translationOf": "svc-youth",
+				"status": "published",
+				"data": {
+					"title": "الشباب والتعليم",
+					"summary": "برامج للشباب.",
+					"sort_order": 3,
+					"content": [
+						{
+							"_type": "block",
+							"_key": "k0",
+							"style": "normal",
+							"children": [
+								{
+									"_type": "span",
+									"_key": "k0s",
+									"text": "صف هذه الخدمة."
+								}
+							]
+						}
+					]
+				}
+			}
+		],
+		"posts": [
+			{
+				"id": "welcome",
+				"slug": "welcome",
+				"locale": "en",
+				"status": "published",
+				"data": {
+					"title": "Welcome to our new website",
+					"excerpt": "Our new home online.",
+					"content": [
+						{
+							"_type": "block",
+							"_key": "k0",
+							"style": "normal",
+							"children": [
+								{
+									"_type": "span",
+									"_key": "k0s",
+									"text": "This is a sample news post. Edit or delete it in the admin."
+								}
+							]
+						}
+					]
+				}
+			},
+			{
+				"id": "welcome-ar",
+				"slug": "welcome",
+				"locale": "ar",
+				"translationOf": "welcome",
+				"status": "published",
+				"data": {
+					"title": "مرحباً بكم في موقعنا الجديد",
+					"excerpt": "بيتنا الجديد على الإنترنت.",
+					"content": [
+						{
+							"_type": "block",
+							"_key": "k0",
+							"style": "normal",
+							"children": [
+								{
+									"_type": "span",
+									"_key": "k0s",
+									"text": "هذا خبر تجريبي. عدّله أو احذفه من لوحة التحكم."
+								}
+							]
+						}
+					]
+				}
+			}
+		],
+		"ui_strings": [
+			{
+				"id": "ui-site-title",
+				"slug": "ui-site-title",
+				"locale": "en",
+				"status": "published",
+				"data": {
+					"title": "site.title",
+					"key": "site.title",
+					"text": "%%SITE_NAME_EN%%"
+				}
+			},
+			{
+				"id": "ui-site-title-ar",
+				"slug": "ui-site-title",
+				"locale": "ar",
+				"translationOf": "ui-site-title",
+				"status": "published",
+				"data": {
+					"title": "site.title",
+					"key": "site.title",
+					"text": "%%SITE_NAME_AR%%"
+				}
+			},
+			{
+				"id": "ui-site-tagline",
+				"slug": "ui-site-tagline",
+				"locale": "en",
+				"status": "published",
+				"data": {
+					"title": "site.tagline",
+					"key": "site.tagline",
+					"text": "%%TAGLINE_EN%%"
+				}
+			},
+			{
+				"id": "ui-site-tagline-ar",
+				"slug": "ui-site-tagline",
+				"locale": "ar",
+				"translationOf": "ui-site-tagline",
+				"status": "published",
+				"data": {
+					"title": "site.tagline",
+					"key": "site.tagline",
+					"text": "%%TAGLINE_AR%%"
+				}
+			},
+			{
+				"id": "ui-nav-menu",
+				"slug": "ui-nav-menu",
+				"locale": "en",
+				"status": "published",
+				"data": {
+					"title": "nav.menu",
+					"key": "nav.menu",
+					"text": "Menu"
+				}
+			},
+			{
+				"id": "ui-nav-menu-ar",
+				"slug": "ui-nav-menu",
+				"locale": "ar",
+				"translationOf": "ui-nav-menu",
+				"status": "published",
+				"data": {
+					"title": "nav.menu",
+					"key": "nav.menu",
+					"text": "القائمة"
+				}
+			},
+			{
+				"id": "ui-footer-rights",
+				"slug": "ui-footer-rights",
+				"locale": "en",
+				"status": "published",
+				"data": {
+					"title": "footer.rights",
+					"key": "footer.rights",
+					"text": "All rights reserved."
+				}
+			},
+			{
+				"id": "ui-footer-rights-ar",
+				"slug": "ui-footer-rights",
+				"locale": "ar",
+				"translationOf": "ui-footer-rights",
+				"status": "published",
+				"data": {
+					"title": "footer.rights",
+					"key": "footer.rights",
+					"text": "جميع الحقوق محفوظة."
+				}
+			},
+			{
+				"id": "ui-home-cta-join",
+				"slug": "ui-home-cta-join",
+				"locale": "en",
+				"status": "published",
+				"data": {
+					"title": "home.cta_join",
+					"key": "home.cta_join",
+					"text": "Become a member"
+				}
+			},
+			{
+				"id": "ui-home-cta-join-ar",
+				"slug": "ui-home-cta-join",
+				"locale": "ar",
+				"translationOf": "ui-home-cta-join",
+				"status": "published",
+				"data": {
+					"title": "home.cta_join",
+					"key": "home.cta_join",
+					"text": "انضم إلينا"
+				}
+			},
+			{
+				"id": "ui-home-cta-about",
+				"slug": "ui-home-cta-about",
+				"locale": "en",
+				"status": "published",
+				"data": {
+					"title": "home.cta_about",
+					"key": "home.cta_about",
+					"text": "About us"
+				}
+			},
+			{
+				"id": "ui-home-cta-about-ar",
+				"slug": "ui-home-cta-about",
+				"locale": "ar",
+				"translationOf": "ui-home-cta-about",
+				"status": "published",
+				"data": {
+					"title": "home.cta_about",
+					"key": "home.cta_about",
+					"text": "من نحن"
+				}
+			},
+			{
+				"id": "ui-home-news-heading",
+				"slug": "ui-home-news-heading",
+				"locale": "en",
+				"status": "published",
+				"data": {
+					"title": "home.news_heading",
+					"key": "home.news_heading",
+					"text": "Latest news"
+				}
+			},
+			{
+				"id": "ui-home-news-heading-ar",
+				"slug": "ui-home-news-heading",
+				"locale": "ar",
+				"translationOf": "ui-home-news-heading",
+				"status": "published",
+				"data": {
+					"title": "home.news_heading",
+					"key": "home.news_heading",
+					"text": "آخر الأخبار"
+				}
+			},
+			{
+				"id": "ui-home-view-all",
+				"slug": "ui-home-view-all",
+				"locale": "en",
+				"status": "published",
+				"data": {
+					"title": "home.view_all",
+					"key": "home.view_all",
+					"text": "View all"
+				}
+			},
+			{
+				"id": "ui-home-view-all-ar",
+				"slug": "ui-home-view-all",
+				"locale": "ar",
+				"translationOf": "ui-home-view-all",
+				"status": "published",
+				"data": {
+					"title": "home.view_all",
+					"key": "home.view_all",
+					"text": "عرض الكل"
+				}
+			},
+			{
+				"id": "ui-services-heading",
+				"slug": "ui-services-heading",
+				"locale": "en",
+				"status": "published",
+				"data": {
+					"title": "services.heading",
+					"key": "services.heading",
+					"text": "Our services"
+				}
+			},
+			{
+				"id": "ui-services-heading-ar",
+				"slug": "ui-services-heading",
+				"locale": "ar",
+				"translationOf": "ui-services-heading",
+				"status": "published",
+				"data": {
+					"title": "services.heading",
+					"key": "services.heading",
+					"text": "خدماتنا"
+				}
+			},
+			{
+				"id": "ui-services-intro",
+				"slug": "ui-services-intro",
+				"locale": "en",
+				"status": "published",
+				"data": {
+					"title": "services.intro",
+					"key": "services.intro",
+					"text": "How we support our community."
+				}
+			},
+			{
+				"id": "ui-services-intro-ar",
+				"slug": "ui-services-intro",
+				"locale": "ar",
+				"translationOf": "ui-services-intro",
+				"status": "published",
+				"data": {
+					"title": "services.intro",
+					"key": "services.intro",
+					"text": "كيف ندعم مجتمعنا."
+				}
+			},
+			{
+				"id": "ui-news-heading",
+				"slug": "ui-news-heading",
+				"locale": "en",
+				"status": "published",
+				"data": {
+					"title": "news.heading",
+					"key": "news.heading",
+					"text": "News"
+				}
+			},
+			{
+				"id": "ui-news-heading-ar",
+				"slug": "ui-news-heading",
+				"locale": "ar",
+				"translationOf": "ui-news-heading",
+				"status": "published",
+				"data": {
+					"title": "news.heading",
+					"key": "news.heading",
+					"text": "الأخبار"
+				}
+			},
+			{
+				"id": "ui-news-empty",
+				"slug": "ui-news-empty",
+				"locale": "en",
+				"status": "published",
+				"data": {
+					"title": "news.empty",
+					"key": "news.empty",
+					"text": "No news yet."
+				}
+			},
+			{
+				"id": "ui-news-empty-ar",
+				"slug": "ui-news-empty",
+				"locale": "ar",
+				"translationOf": "ui-news-empty",
+				"status": "published",
+				"data": {
+					"title": "news.empty",
+					"key": "news.empty",
+					"text": "لا توجد أخبار بعد."
+				}
+			},
+			{
+				"id": "ui-contact-heading",
+				"slug": "ui-contact-heading",
+				"locale": "en",
+				"status": "published",
+				"data": {
+					"title": "contact.heading",
+					"key": "contact.heading",
+					"text": "Contact us"
+				}
+			},
+			{
+				"id": "ui-contact-heading-ar",
+				"slug": "ui-contact-heading",
+				"locale": "ar",
+				"translationOf": "ui-contact-heading",
+				"status": "published",
+				"data": {
+					"title": "contact.heading",
+					"key": "contact.heading",
+					"text": "اتصل بنا"
+				}
+			},
+			{
+				"id": "ui-contact-intro",
+				"slug": "ui-contact-intro",
+				"locale": "en",
+				"status": "published",
+				"data": {
+					"title": "contact.intro",
+					"key": "contact.intro",
+					"text": "Send us a message and we will get back to you."
+				}
+			},
+			{
+				"id": "ui-contact-intro-ar",
+				"slug": "ui-contact-intro",
+				"locale": "ar",
+				"translationOf": "ui-contact-intro",
+				"status": "published",
+				"data": {
+					"title": "contact.intro",
+					"key": "contact.intro",
+					"text": "أرسل لنا رسالة وسنرد عليك."
+				}
+			},
+			{
+				"id": "ui-contact-name",
+				"slug": "ui-contact-name",
+				"locale": "en",
+				"status": "published",
+				"data": {
+					"title": "contact.name",
+					"key": "contact.name",
+					"text": "Name"
+				}
+			},
+			{
+				"id": "ui-contact-name-ar",
+				"slug": "ui-contact-name",
+				"locale": "ar",
+				"translationOf": "ui-contact-name",
+				"status": "published",
+				"data": {
+					"title": "contact.name",
+					"key": "contact.name",
+					"text": "الاسم"
+				}
+			},
+			{
+				"id": "ui-contact-email",
+				"slug": "ui-contact-email",
+				"locale": "en",
+				"status": "published",
+				"data": {
+					"title": "contact.email",
+					"key": "contact.email",
+					"text": "Email"
+				}
+			},
+			{
+				"id": "ui-contact-email-ar",
+				"slug": "ui-contact-email",
+				"locale": "ar",
+				"translationOf": "ui-contact-email",
+				"status": "published",
+				"data": {
+					"title": "contact.email",
+					"key": "contact.email",
+					"text": "البريد الإلكتروني"
+				}
+			},
+			{
+				"id": "ui-contact-phone",
+				"slug": "ui-contact-phone",
+				"locale": "en",
+				"status": "published",
+				"data": {
+					"title": "contact.phone",
+					"key": "contact.phone",
+					"text": "Phone (optional)"
+				}
+			},
+			{
+				"id": "ui-contact-phone-ar",
+				"slug": "ui-contact-phone",
+				"locale": "ar",
+				"translationOf": "ui-contact-phone",
+				"status": "published",
+				"data": {
+					"title": "contact.phone",
+					"key": "contact.phone",
+					"text": "الهاتف (اختياري)"
+				}
+			},
+			{
+				"id": "ui-contact-message",
+				"slug": "ui-contact-message",
+				"locale": "en",
+				"status": "published",
+				"data": {
+					"title": "contact.message",
+					"key": "contact.message",
+					"text": "Message"
+				}
+			},
+			{
+				"id": "ui-contact-message-ar",
+				"slug": "ui-contact-message",
+				"locale": "ar",
+				"translationOf": "ui-contact-message",
+				"status": "published",
+				"data": {
+					"title": "contact.message",
+					"key": "contact.message",
+					"text": "الرسالة"
+				}
+			},
+			{
+				"id": "ui-contact-submit",
+				"slug": "ui-contact-submit",
+				"locale": "en",
+				"status": "published",
+				"data": {
+					"title": "contact.submit",
+					"key": "contact.submit",
+					"text": "Send message"
+				}
+			},
+			{
+				"id": "ui-contact-submit-ar",
+				"slug": "ui-contact-submit",
+				"locale": "ar",
+				"translationOf": "ui-contact-submit",
+				"status": "published",
+				"data": {
+					"title": "contact.submit",
+					"key": "contact.submit",
+					"text": "إرسال"
+				}
+			},
+			{
+				"id": "ui-contact-success",
+				"slug": "ui-contact-success",
+				"locale": "en",
+				"status": "published",
+				"data": {
+					"title": "contact.success",
+					"key": "contact.success",
+					"text": "Thank you. Your message has been sent."
+				}
+			},
+			{
+				"id": "ui-contact-success-ar",
+				"slug": "ui-contact-success",
+				"locale": "ar",
+				"translationOf": "ui-contact-success",
+				"status": "published",
+				"data": {
+					"title": "contact.success",
+					"key": "contact.success",
+					"text": "شكراً لك. تم إرسال رسالتك."
+				}
+			},
+			{
+				"id": "ui-contact-error",
+				"slug": "ui-contact-error",
+				"locale": "en",
+				"status": "published",
+				"data": {
+					"title": "contact.error",
+					"key": "contact.error",
+					"text": "Something went wrong. Please try again."
+				}
+			},
+			{
+				"id": "ui-contact-error-ar",
+				"slug": "ui-contact-error",
+				"locale": "ar",
+				"translationOf": "ui-contact-error",
+				"status": "published",
+				"data": {
+					"title": "contact.error",
+					"key": "contact.error",
+					"text": "حدث خطأ. يرجى المحاولة مرة أخرى."
+				}
+			},
+			{
+				"id": "ui-register-heading",
+				"slug": "ui-register-heading",
+				"locale": "en",
+				"status": "published",
+				"data": {
+					"title": "register.heading",
+					"key": "register.heading",
+					"text": "Become a member"
+				}
+			},
+			{
+				"id": "ui-register-heading-ar",
+				"slug": "ui-register-heading",
+				"locale": "ar",
+				"translationOf": "ui-register-heading",
+				"status": "published",
+				"data": {
+					"title": "register.heading",
+					"key": "register.heading",
+					"text": "انضم كعضو"
+				}
+			},
+			{
+				"id": "ui-register-intro",
+				"slug": "ui-register-intro",
+				"locale": "en",
+				"status": "published",
+				"data": {
+					"title": "register.intro",
+					"key": "register.intro",
+					"text": "Fill in the form to register. Fields marked * are required."
+				}
+			},
+			{
+				"id": "ui-register-intro-ar",
+				"slug": "ui-register-intro",
+				"locale": "ar",
+				"translationOf": "ui-register-intro",
+				"status": "published",
+				"data": {
+					"title": "register.intro",
+					"key": "register.intro",
+					"text": "املأ النموذج للتسجيل. الحقول المميزة بـ * مطلوبة."
+				}
+			},
+			{
+				"id": "ui-register-submit",
+				"slug": "ui-register-submit",
+				"locale": "en",
+				"status": "published",
+				"data": {
+					"title": "register.submit",
+					"key": "register.submit",
+					"text": "Register"
+				}
+			},
+			{
+				"id": "ui-register-submit-ar",
+				"slug": "ui-register-submit",
+				"locale": "ar",
+				"translationOf": "ui-register-submit",
+				"status": "published",
+				"data": {
+					"title": "register.submit",
+					"key": "register.submit",
+					"text": "تسجيل"
+				}
+			},
+			{
+				"id": "ui-register-success-heading",
+				"slug": "ui-register-success-heading",
+				"locale": "en",
+				"status": "published",
+				"data": {
+					"title": "register.success_heading",
+					"key": "register.success_heading",
+					"text": "Registration received"
+				}
+			},
+			{
+				"id": "ui-register-success-heading-ar",
+				"slug": "ui-register-success-heading",
+				"locale": "ar",
+				"translationOf": "ui-register-success-heading",
+				"status": "published",
+				"data": {
+					"title": "register.success_heading",
+					"key": "register.success_heading",
+					"text": "تم استلام طلبك"
+				}
+			},
+			{
+				"id": "ui-register-success-body",
+				"slug": "ui-register-success-body",
+				"locale": "en",
+				"status": "published",
+				"data": {
+					"title": "register.success_body",
+					"key": "register.success_body",
+					"text": "Thank you. We will review your registration and be in touch."
+				}
+			},
+			{
+				"id": "ui-register-success-body-ar",
+				"slug": "ui-register-success-body",
+				"locale": "ar",
+				"translationOf": "ui-register-success-body",
+				"status": "published",
+				"data": {
+					"title": "register.success_body",
+					"key": "register.success_body",
+					"text": "شكراً لك. سنراجع طلبك ونتواصل معك."
+				}
+			},
+			{
+				"id": "ui-register-error",
+				"slug": "ui-register-error",
+				"locale": "en",
+				"status": "published",
+				"data": {
+					"title": "register.error",
+					"key": "register.error",
+					"text": "Please check the form and try again."
+				}
+			},
+			{
+				"id": "ui-register-error-ar",
+				"slug": "ui-register-error",
+				"locale": "ar",
+				"translationOf": "ui-register-error",
+				"status": "published",
+				"data": {
+					"title": "register.error",
+					"key": "register.error",
+					"text": "يرجى مراجعة النموذج والمحاولة مرة أخرى."
+				}
+			},
+			{
+				"id": "ui-form-select",
+				"slug": "ui-form-select",
+				"locale": "en",
+				"status": "published",
+				"data": {
+					"title": "form.select",
+					"key": "form.select",
+					"text": "Select…"
+				}
+			},
+			{
+				"id": "ui-form-select-ar",
+				"slug": "ui-form-select",
+				"locale": "ar",
+				"translationOf": "ui-form-select",
+				"status": "published",
+				"data": {
+					"title": "form.select",
+					"key": "form.select",
+					"text": "اختر…"
+				}
+			},
+			{
+				"id": "ui-form-rate-limited",
+				"slug": "ui-form-rate-limited",
+				"locale": "en",
+				"status": "published",
+				"data": {
+					"title": "form.rate_limited",
+					"key": "form.rate_limited",
+					"text": "Too many submissions. Please try again later."
+				}
+			},
+			{
+				"id": "ui-form-rate-limited-ar",
+				"slug": "ui-form-rate-limited",
+				"locale": "ar",
+				"translationOf": "ui-form-rate-limited",
+				"status": "published",
+				"data": {
+					"title": "form.rate_limited",
+					"key": "form.rate_limited",
+					"text": "عدد كبير من المحاولات. حاول لاحقاً."
+				}
+			},
+			{
+				"id": "ui-404-heading",
+				"slug": "ui-404-heading",
+				"locale": "en",
+				"status": "published",
+				"data": {
+					"title": "404.heading",
+					"key": "404.heading",
+					"text": "Page not found"
+				}
+			},
+			{
+				"id": "ui-404-heading-ar",
+				"slug": "ui-404-heading",
+				"locale": "ar",
+				"translationOf": "ui-404-heading",
+				"status": "published",
+				"data": {
+					"title": "404.heading",
+					"key": "404.heading",
+					"text": "الصفحة غير موجودة"
+				}
+			},
+			{
+				"id": "ui-404-body",
+				"slug": "ui-404-body",
+				"locale": "en",
+				"status": "published",
+				"data": {
+					"title": "404.body",
+					"key": "404.body",
+					"text": "The page you are looking for does not exist."
+				}
+			},
+			{
+				"id": "ui-404-body-ar",
+				"slug": "ui-404-body",
+				"locale": "ar",
+				"translationOf": "ui-404-body",
+				"status": "published",
+				"data": {
+					"title": "404.body",
+					"key": "404.body",
+					"text": "الصفحة التي تبحث عنها غير موجودة."
+				}
+			},
+			{
+				"id": "ui-404-home",
+				"slug": "ui-404-home",
+				"locale": "en",
+				"status": "published",
+				"data": {
+					"title": "404.home",
+					"key": "404.home",
+					"text": "Go to the homepage"
+				}
+			},
+			{
+				"id": "ui-404-home-ar",
+				"slug": "ui-404-home",
+				"locale": "ar",
+				"translationOf": "ui-404-home",
+				"status": "published",
+				"data": {
+					"title": "404.home",
+					"key": "404.home",
+					"text": "العودة إلى الرئيسية"
+				}
+			}
+		]
+	}
+}

@@ -1,0 +1,14 @@
+---
+import Base from "../layouts/Base.astro";
+import { getUiStrings } from "../utils/ui-strings";
+import { localizedHref } from "../utils/localized-href";
+
+const locale = Astro.locals.locale;
+const t = await getUiStrings(locale);
+---
+
+<Base title={t["404.heading"] ?? "Page not found"}>
+	<h1>{t["404.heading"] ?? "Page not found"}</h1>
+	<p>{t["404.body"] ?? "The page you are looking for does not exist."}</p>
+	<a href={localizedHref(locale, "/")} class="btn btn--primary">{t["404.home"] ?? "Go to the homepage"}</a>
+</Base>

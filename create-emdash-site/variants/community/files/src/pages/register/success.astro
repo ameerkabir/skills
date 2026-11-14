@@ -1,0 +1,16 @@
+---
+import Base from "../../layouts/Base.astro";
+import { getUiStrings } from "../../utils/ui-strings";
+import { localizedHref } from "../../utils/localized-href";
+
+const locale = Astro.locals.locale;
+const t = await getUiStrings(locale);
+---
+
+<Base title={t["register.success_heading"] ?? "Registration received"}>
+	<div class="notice notice--success">
+		<h1>{t["register.success_heading"] ?? "Registration received"}</h1>
+		<p>{t["register.success_body"] ?? "Thank you. We will review your registration and be in touch."}</p>
+	</div>
+	<p><a href={localizedHref(locale, "/")} class="btn btn--ghost">{t["404.home"] ?? "Go to the homepage"}</a></p>
+</Base>

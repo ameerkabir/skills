@@ -1,0 +1,46 @@
+---
+import { getEmDashEntry, getSeoMeta, decodeSlug, getSiteSettings } from "emdash";
+import { Image, PortableText } from "emdash/ui";
+import Base from "../../layouts/Base.astro";
+import { resolveSiteIdentity } from "../../utils/site-identity";
+import { localizedHref } from "../../utils/localized-href";
+
+const locale = Astro.locals.locale;
+const slug = decodeSlug(Astro.params.slug);
+if (!slug) {
+	return Astro.rewrite("/404");
+}
+const { entry: post, cacheHint } = await getEmDashEntry("posts", slug, { locale });
+if (!post) {
+	return Astro.rewrite("/404");
+}
+if (Astro.cache?.enabled) {
+	Astro.cache.set(cacheHint);
+}
+const { siteTitle } = resolveSiteIdentity(await getSiteSettings(), locale);
+const seo = getSeoMeta(post, { siteTitle, siteUrl: Astro.url.origin, path: `/posts/${slug}` });
+const categories = post.data.terms?.category ?? [];
+---
+
+<Base
+	title={post.data.title}
+	description={seo.description}
+	canonical={seo.canonical}
+	image={seo.ogImage}
+	content={{ collection: "posts", id: post.data.id, slug }}
+	routePrefix="/posts"
+>
+	<article class="prose">
+		{post.data.featured_image && <div {...post.edit.featured_image}><Image image={post.data.featured_image} /></div>}
+		<h1 {...post.edit.title}>{post.data.title}</h1>
+		{post.data.publishedAt && (
+			<time datetime={post.data.publishedAt.toISOString()}>
+				{post.data.publishedAt.toLocaleDateString(locale, { year: "numeric", month: "long", day: "numeric" })}
+			</time>
+		)}
+		{categories.length > 0 && (
+			<p>{categories.map((c) => <a href={localizedHref(locale, `/category/${c.slug}`)}>{c.label}</a>)}</p>
+		)}
+		<PortableText value={post.data.content} />
+	</article>
+</Base>

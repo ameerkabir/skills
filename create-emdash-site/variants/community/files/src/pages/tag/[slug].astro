@@ -1,0 +1,28 @@
+---
+import { getTaxonomyTermsWithCacheHint, getEmDashCollection, decodeSlug } from "emdash";
+import Base from "../../layouts/Base.astro";
+import PostCard from "../../components/PostCard.astro";
+
+const locale = Astro.locals.locale;
+const slug = decodeSlug(Astro.params.slug);
+const terms = await getTaxonomyTermsWithCacheHint("tag", { locale, includeCounts: false });
+const term = slug ? terms.data.find((item) => item.slug === slug) : null;
+if (!term) {
+	return Astro.rewrite("/404");
+}
+const { entries: posts, cacheHint } = await getEmDashCollection("posts", {
+	locale,
+	where: { tag: term.slug },
+	orderBy: { published_at: "desc" },
+	limit: 24,
+});
+if (Astro.cache?.enabled) {
+	Astro.cache.set(cacheHint);
+	Astro.cache.set(terms.cacheHint);
+}
+---
+
+<Base title={term.label}>
+	<h1>{term.label}</h1>
+	<div class="card-grid">{posts.map((post) => <PostCard post={post} />)}</div>
+</Base>
