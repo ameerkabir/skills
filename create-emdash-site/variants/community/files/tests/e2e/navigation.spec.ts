@@ -47,3 +47,13 @@ test("every primary menu link resolves", async ({ page, request }) => {
 		expect((await request.get(href)).status(), href).toBe(200);
 	}
 });
+
+test("footer carries the builder credit in each language", async ({ page }) => {
+	await page.goto("/");
+	const en = await page.locator(".site-footer__credit").textContent();
+	await page.goto("/ar");
+	const ar = await page.locator(".site-footer__credit").textContent();
+	expect(en?.trim()).toBeTruthy();
+	expect(ar?.trim()).toBeTruthy();
+	expect(ar).not.toBe(en);
+});

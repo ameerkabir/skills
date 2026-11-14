@@ -937,6 +937,29 @@
 				}
 			},
 			{
+				"id": "ui-footer-credit",
+				"slug": "ui-footer-credit",
+				"locale": "en",
+				"status": "published",
+				"data": {
+					"title": "footer.credit",
+					"key": "footer.credit",
+					"text": "%%CREDIT_EN%%"
+				}
+			},
+			{
+				"id": "ui-footer-credit-ar",
+				"slug": "ui-footer-credit",
+				"locale": "ar",
+				"translationOf": "ui-footer-credit",
+				"status": "published",
+				"data": {
+					"title": "footer.credit",
+					"key": "footer.credit",
+					"text": "%%CREDIT_AR%%"
+				}
+			},
+			{
 				"id": "ui-home-cta-join",
 				"slug": "ui-home-cta-join",
 				"locale": "en",

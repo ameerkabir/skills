@@ -19,6 +19,7 @@ Read `SKILL_DIR/variants/<variant>/VARIANT.md` first, then ask with AskUserQuest
 - production domain
 - pages: the variant's default set; which to drop, which extras to add
 - member form fields: keep the default list, plus additions and removals
+- footer credit in English and Arabic (default `Crafted by Ameer` / `من إبداع أمير`)
 - accent colour; sender email (on a domain onboarded for Cloudflare Email Sending); the address that receives contact-form mail
 - GitHub repo name and visibility
 

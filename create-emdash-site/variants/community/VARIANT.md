@@ -12,6 +12,7 @@ A bilingual community-organisation site: hero home page, about, services, news, 
 | `TAGLINE_EN` / `TAGLINE_AR` | one line each |
 | `DOMAIN` | `example.org` (no scheme) |
 | `ACCENT` | `#0f766e` |
+| `CREDIT_EN` / `CREDIT_AR` | footer builder credit; default `Crafted by Ameer` / `من إبداع أمير` |
 | `EMDASH_VERSION` | the installed `emdash` version, e.g. `1.5.0` |
 
 The rest of the brief (non-token) records: `projectName`, `pages` (the default set below plus extras), `memberFields` (slugs added or removed from the default list), `emailFrom`, `contactTo`, `github: { repo, visibility }`.

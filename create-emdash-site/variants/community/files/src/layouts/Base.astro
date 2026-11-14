@@ -101,6 +101,8 @@ const pageCtx = createPublicPageContext({
 					</p>
 				) : null}
 				<p class="site-footer__copy">© {new Date().getFullYear()} {siteTitle}. {t["footer.rights"] ?? "All rights reserved."}</p>
+				{/* Builder credit from ui_strings "footer.credit"; delete that row in the admin to remove it. */}
+				{t["footer.credit"] && <p class="site-footer__credit">{t["footer.credit"]}</p>}
 			</div>
 		</footer>
 		<EmDashBodyEnd page={pageCtx} />
@@ -108,6 +110,11 @@ const pageCtx = createPublicPageContext({
 </html>
 
 <style>
+	.site-footer__credit {
+		margin: 0.5rem 0 0;
+		font-size: 0.8125rem;
+		color: var(--color-text-muted);
+	}
 	.site-header {
 		position: sticky;
 		top: 0;
