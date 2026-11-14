@@ -3,15 +3,16 @@ import { getEmDashEntry, getSeoMeta, decodeSlug, getSiteSettings } from "emdash"
 import { PortableText } from "emdash/ui";
 import Base from "../layouts/Base.astro";
 import { resolveSiteIdentity } from "../utils/site-identity";
+import { localizedHref } from "../utils/localized-href";
 
 const locale = Astro.locals.locale;
 const slug = decodeSlug(Astro.params.slug);
 if (!slug) {
-	return Astro.rewrite("/404");
+	return Astro.rewrite(localizedHref(locale, "/404"));
 }
 const { entry: page, cacheHint } = await getEmDashEntry("pages", slug, { locale });
 if (!page) {
-	return Astro.rewrite("/404");
+	return Astro.rewrite(localizedHref(locale, "/404"));
 }
 if (Astro.cache?.enabled) {
 	Astro.cache.set(cacheHint);

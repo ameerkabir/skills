@@ -8,11 +8,11 @@ import { localizedHref } from "../../utils/localized-href";
 const locale = Astro.locals.locale;
 const slug = decodeSlug(Astro.params.slug);
 if (!slug) {
-	return Astro.rewrite("/404");
+	return Astro.rewrite(localizedHref(locale, "/404"));
 }
 const { entry: post, cacheHint } = await getEmDashEntry("posts", slug, { locale });
 if (!post) {
-	return Astro.rewrite("/404");
+	return Astro.rewrite(localizedHref(locale, "/404"));
 }
 if (Astro.cache?.enabled) {
 	Astro.cache.set(cacheHint);

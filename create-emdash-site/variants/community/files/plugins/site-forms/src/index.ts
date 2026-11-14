@@ -3,6 +3,7 @@ import type { PluginDescriptor } from "emdash";
 import { buildMemberSchema } from "./member-fields";
 import { contactEmail, contactSchema } from "./contact";
 import { allowSubmission } from "./rate-limit";
+import { retryOnSlugConflict } from "./slug-retry";
 
 // Public form endpoints for the site's own pages:
 //   POST /_emdash/api/plugins/site-forms/register  -> a `members` entry
@@ -14,12 +15,21 @@ const ID = "site-forms";
 const VERSION = "1.0.0";
 const CAPABILITIES = ["content:write", "email:send"] as const;
 
-export function siteFormsPlugin(options: { contactTo?: string; siteName?: string } = {}): PluginDescriptor {
+export interface SiteFormsOptions {
+	contactTo?: string;
+	siteName?: string;
+	/** Per-IP submission limit. Pass `process.env.NODE_ENV === "production"` so local test runs aren't throttled. */
+	rateLimit?: boolean;
+}
+
+export function siteFormsPlugin(options: SiteFormsOptions = {}): PluginDescriptor {
 	return { id: ID, version: VERSION, format: "native", entrypoint: "site-forms", capabilities: [...CAPABILITIES], options };
 }
 
-export function createPlugin(options: { contactTo?: string; siteName?: string } = {}) {
+export function createPlugin(options: SiteFormsOptions = {}) {
 	const memberSchema = buildMemberSchema();
+	const limited = (ctx: { kv: Parameters<typeof allowSubmission>[0]; requestMeta: { ip: string | null } }, form: string) =>
+		options.rateLimit !== false && allowSubmission(ctx.kv, form, ctx.requestMeta.ip).then((ok) => !ok);
 
 	return definePlugin({
 		id: ID,
@@ -33,10 +43,10 @@ export function createPlugin(options: { contactTo?: string; siteName?: string } 
 					if (!parsed.success) {
 						throw PluginRouteError.badRequest("VALIDATION_FAILED", parsed.error.issues.map((i) => i.path.join(".")));
 					}
-					if (!(await allowSubmission(ctx.kv, "register", ctx.requestMeta.ip))) {
+					if (await limited(ctx, "register")) {
 						throw new PluginRouteError("RATE_LIMITED", "Too many submissions", 429);
 					}
-					const entry = await ctx.content!.create!("members", { ...parsed.data, registration_status: "pending" });
+					const entry = await retryOnSlugConflict(() => ctx.content!.create!("members", { ...parsed.data, registration_status: "pending" }));
 					return { ok: true, id: entry.id };
 				},
 			},
@@ -51,11 +61,11 @@ export function createPlugin(options: { contactTo?: string; siteName?: string } 
 					if (website) {
 						return { ok: true };
 					}
-					if (!(await allowSubmission(ctx.kv, "contact", ctx.requestMeta.ip))) {
+					if (await limited(ctx, "contact")) {
 						throw new PluginRouteError("RATE_LIMITED", "Too many submissions", 429);
 					}
 					const { name, ...fields } = input;
-					await ctx.content!.create!("contact_messages", { title: name, ...fields });
+					await retryOnSlugConflict(() => ctx.content!.create!("contact_messages", { title: name, ...fields }));
 					if (options.contactTo && ctx.email) {
 						try {
 							await ctx.email.send({ to: options.contactTo, ...contactEmail(input, options.siteName ?? ctx.site.name) });

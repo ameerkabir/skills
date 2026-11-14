@@ -50,17 +50,19 @@ It refuses to run while any token lacks a value. Then make every edit in VARIANT
 
 ## 4. Adapt to the brief
 
-Apply the brief's page and member-field changes, as VARIANT.md describes. Every new page follows its page conventions. Then bring the site up:
+Apply the brief's page and member-field changes, as VARIANT.md describes. Every new page follows its page conventions, and every added or dropped page is reflected in `PAGES` in `tests/acceptance.ts`. Then bring the site up and check it:
 
 ```bash
-pnpm dev                                    # Astro 7 runs this as a daemon; `npx astro dev stop` to stop
-curl -s "http://localhost:4321/_emdash/api/setup/dev-bypass?redirect=/"   # setup + sample content
+pnpm exec playwright install chromium   # once per machine
+pnpm dev:up                             # daemonised dev server + setup with sample content
 npx emdash types
+pnpm smoke                              # every page × locale, the 404, both forms
+pnpm test:e2e                           # forms, RTL, language switcher, mobile menu
 ```
 
-Restart the dev server after any change under `plugins/`: native plugins load once at startup.
+Restart the dev server after any change under `plugins/` (`npx astro dev stop && pnpm dev:up`): native plugins load once at startup. When a check fails, `npx astro dev logs` has the server-side error; fix the overlay cause, not the test.
 
-**Done when** every route and POST in VARIANT.md's **Acceptance** list passes against the dev server, and `pnpm lint && pnpm typecheck && pnpm test && pnpm build` is **green**.
+**Done when** `pnpm smoke` and `pnpm test:e2e` are **green** against the dev server, and `pnpm lint && pnpm typecheck && pnpm test && pnpm build` is **green**.
 
 ## 5. Ship to GitHub
 

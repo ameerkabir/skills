@@ -12,12 +12,16 @@ Each one has cost real debugging time. Check the matching entry before you dig.
 
 ## Runtime values
 - **Boolean fields come back as `0`/`1`**, not `true`/`false`. Never test with `=== true`; coerce with `!!`.
+- **`ctx.content.create` auto-slugs from `title` and races.** Two same-name submissions at once throw `SLUG_CONFLICT` (500). The site-forms plugin wraps creates in `retryOnSlugConflict`.
 - **Entries created by `ctx.content.create` are drafts.** That suits form submissions, which are reviewed in the admin and never rendered publicly.
 
 ## i18n and routing
 - **Keep `routing: "manual"` plus the middleware rewrite.** Prefix-default strategies 404 the admin. Astro's default strategy needs real `src/pages/ar/` copies of every page. The rewrite serves `/ar/x` from `/x`.
 - **List queries don't fall back to the default locale; single-entry queries do.** An untranslated list renders empty in Arabic, so seed both locales.
 - **Fonts need `fontProviders.google()`, not a string, and a `<Font cssVariable=... />` in `<head>` for each font.**
+
+- **`Astro.rewrite("/404")` drops the locale.** The rewrite re-runs the middleware on `/404`, so an Arabic miss renders the English 404. Rewrite to `localizedHref(locale, "/404")`.
+- **`getRelativeLocaleUrl` adds a trailing slash** (`/register/`). Match URLs with `\/?$` in tests, and `href^=` in selectors.
 
 ## Auth and people
 - **Subscriber can read all published content through the API.** `content:read` starts at the lowest role, so a Subscriber account could read `members`. Don't create sub-Contributor accounts on these sites. Members are records, not users.
@@ -26,5 +30,6 @@ Each one has cost real debugging time. Check the matching entry before you dig.
 
 ## Dev loop
 - **Astro 7 `pnpm dev` is a daemon.** Use `npx astro dev logs` and `npx astro dev stop`.
+- **The forms rate-limit 5/hour per IP.** Test runs exceed that, so the plugin's `rateLimit` option is on only when `NODE_ENV` is `production`.
 - **Native plugins load once.** Restart the dev server after editing `plugins/*`, or the old route code keeps running.
 - **better-sqlite3 binding missing on a new Node major** (CLI commands touching `data.db`): run `npm run install` inside `node_modules/better-sqlite3`.

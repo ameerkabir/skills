@@ -31,7 +31,7 @@ The overlay ships all of these pages, tested together. Adapt them to the brief; 
 | 404 | `/404` | `404.*` ui_strings, link home |
 
 To add an extra page from the brief:
-- If it's static, add a `pages` entry served by `[slug].astro`. Seed it in en + ar, add it to both locales of the `primary` menu, and you're done.
+- If it's static, add a `pages` entry served by `[slug].astro`. Seed it in en + ar, add it to both locales of the `primary` menu and to `PAGES` in `tests/acceptance.ts`, and you're done.
 - If it needs structured content, give it its own collection and page file, following `services.astro`.
 
 To drop a page, remove all of these:
@@ -39,6 +39,7 @@ To drop a page, remove all of these:
 - its collection and its seed content
 - its menu items, in both locales
 - its `ui_strings` keys
+- its `PAGES` entry in `tests/acceptance.ts`, and any e2e test that visits it
 
 ## Config edits (scaffold files, edit in place)
 
@@ -47,7 +48,7 @@ The overlay doesn't replace these because the scaffold's versions move with each
 - **`astro.config.mjs`**
   - `i18n: { defaultLocale: DEFAULT_LOCALE, locales: [...SUPPORTED_LOCALES], routing: "manual", fallback: { ar: "en" } }`, imported from `./src/utils/locales.ts`.
   - `fonts`: two `fontProviders.google()` entries bound to `--font-body` (e.g. Inter) and `--font-arabic` (e.g. Noto Sans Arabic, `subsets: ["arabic"]`).
-  - `emdash({ ..., plugins: [cloudflareEmail({ from: { email: emailFrom, name: SITE_NAME_EN } }), siteFormsPlugin({ contactTo, siteName: SITE_NAME_EN })] })`, importing `cloudflareEmail` from `@emdash-cms/cloudflare/plugins` and `siteFormsPlugin` from `site-forms`.
+  - `emdash({ ..., plugins: [cloudflareEmail({ from: { email: emailFrom, name: SITE_NAME_EN } }), siteFormsPlugin({ contactTo, siteName: SITE_NAME_EN, rateLimit: process.env.NODE_ENV === "production" })] })`, importing `cloudflareEmail` from `@emdash-cms/cloudflare/plugins` and `siteFormsPlugin` from `site-forms`.
 - **`wrangler.jsonc`**
   - `name` = projectName, and `d1_databases[0].database_name` = projectName.
   - `r2_buckets[0].bucket_name` = `<projectName>-media`.
@@ -57,8 +58,10 @@ The overlay doesn't replace these because the scaffold's versions move with each
 - **`package.json`**
   - `name` = projectName, `emdash.label` = SITE_NAME_EN.
   - Dependencies: add `"site-forms": "workspace:*"` and `zod`.
-  - Dev dependencies: add `vitest`, `eslint`, `@eslint/js`, `typescript-eslint`, `eslint-plugin-astro`, `astro-eslint-parser`.
-  - Scripts: `lint` (`eslint .`), `lint:fix`, `test` (`vitest run`), `sync-schema`.
+  - Dev dependencies: add `vitest`, `eslint`, `@eslint/js`, `typescript-eslint`, `eslint-plugin-astro`, `astro-eslint-parser`, `@playwright/test`.
+  - Scripts: `lint` (`eslint .`), `lint:fix`, `test` (`vitest run`), `sync-schema`, `dev:up` (`node scripts/dev-up.ts`), `smoke` (`node scripts/smoke.ts`), `test:e2e` (`playwright test`).
+- **`tsconfig.json`**: add `"tests"`, `"scripts/**/*.ts"` and `"playwright.config.ts"` to `include`.
+- **`.gitignore`**: add `test-results/` and `playwright-report/`.
 - **`pnpm-workspace.yaml`**: add `packages: ["plugins/*"]`.
 - **Scaffold pages**: replace `resolveStarterSiteIdentity` with `resolveSiteIdentity` (from the overlay's `src/utils/site-identity.ts`) everywhere.
 
@@ -80,9 +83,9 @@ Forms are a `<form data-endpoint=...>` with `data-msg-*` attributes. `src/script
 
 ## Acceptance
 
-With `pnpm dev` running, each of these returns 200 and renders seeded content:
+`tests/acceptance.ts` is the single source of truth: `PAGES`, the form endpoints and the sample submissions. Two TypeScript runners read it (Node runs `.ts` directly):
 
-- `/`, `/ar`, `/about`, `/ar/about`, `/services`, `/ar/services`, `/posts`, `/ar/posts`, `/contact`, `/ar/contact`, `/register`, `/ar/register`.
-- Arabic pages carry `<html lang="ar" dir="rtl">`.
-- A POST to `/_emdash/api/plugins/site-forms/register` with the required fields creates a `members` entry, visible in the admin.
-- A POST to `/_emdash/api/plugins/site-forms/contact` creates a `contact_messages` entry.
+- **`pnpm smoke [url]`** (`scripts/smoke.ts`): every `PAGES` path in every locale returns 200 with the right `<html lang dir>`; an unknown path 404s in the right locale; each form accepts valid input (200) and rejects invalid input (400). Against localhost it submits the forms; against any other URL it is read-only unless given `--write`. CI runs it on the dev server, and read-only on production after each deploy.
+- **`pnpm test:e2e`** (Playwright, desktop + mobile): contact notice, register → success page in both locales, browser validation, hero CTA, language switcher round trip, `/ar` links keep their prefix, every menu link resolves.
+
+Test submissions are titled `[test] …`; delete them in the admin. Staff checks the drafts in the admin (Members, Contact messages) by hand once.

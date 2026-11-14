@@ -11,7 +11,8 @@ gh repo create <owner>/<repo> --<visibility> --source . --push
 
 The overlay already ships `.github/workflows/ci.yml`:
 - **ci job:** runs lint, typecheck and test on every push and PR. It goes green on the first push.
-- **deploy job:** syncs schema and content, then deploys. It is gated on the repo variable `DEPLOY_ENABLED == "true"`, so it stays skipped until the Cloudflare side exists.
+- **acceptance job:** starts the dev server on a fresh local D1 (`pnpm dev:up`), then runs `pnpm smoke` and `pnpm test:e2e`. On failure it prints the dev logs and uploads Playwright traces.
+- **deploy job:** needs both. It syncs schema and content, deploys, then runs a read-only `pnpm smoke` against production. It is gated on the repo variable `DEPLOY_ENABLED == "true"`, so it stays skipped until the Cloudflare side exists.
 
 Confirm the first run with `gh run watch`.
 

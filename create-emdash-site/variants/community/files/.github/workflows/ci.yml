@@ -20,8 +20,33 @@ jobs:
       - run: pnpm typecheck
       - run: pnpm test
 
+  acceptance:
+    # The dev server on a fresh local D1, seeded with sample content, then
+    # the HTTP smoke test and the browser tests against it.
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: pnpm
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm exec playwright install --with-deps chromium
+      - run: pnpm dev:up
+      - run: pnpm smoke
+      - run: pnpm test:e2e
+      - if: failure()
+        run: npx astro dev logs
+      - if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: playwright-traces
+          path: test-results/
+          retention-days: 7
+
   deploy:
-    needs: ci
+    needs: [ci, acceptance]
     # Off until the first manual deploy has created the D1/R2 resources and
     # the repo secrets exist. Flip DEPLOY_ENABLED to "true" in repo variables.
     if: github.ref == 'refs/heads/main' && github.event_name == 'push' && vars.DEPLOY_ENABLED == 'true'
@@ -46,3 +71,5 @@ jobs:
         env:
           CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+      # Read-only: production gets page checks, no test submissions.
+      - run: pnpm smoke "$EMDASH_URL"
