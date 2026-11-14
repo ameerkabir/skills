@@ -4,6 +4,7 @@
 - **"No URLs enabled" in the dashboard:** `routes` turns off `workers.dev` by default. Set `"workers_dev": true` to keep a public URL while the zone is pending.
 - **Wrangler's OAuth login has no zone or DNS scope.** Use `cf` (its own login) for zones, DNS and rules.
 - **`cf` resolves a domain name passed to `-z`**, so zone IDs are optional.
+- **DKIM selectors are guesses.** DNS can't be listed, so a DKIM key under an unusual selector is invisible to the probe (Namecheap Private Email uses `privateemail._domainkey`, now probed). The registrar's DNS page is the check: every `*._domainkey` host there must be in the snapshot, else `--extra` it. A missing DKIM key sends mail to spam after the switch.
 - **Mail records must be DNS-only.** A proxied MX target or mail CNAME breaks mail; the import never proxies.
 - **One SPF record per name.** Email Sending onboarding, or a second mail provider, adds its own; merge the `include:`s into one TXT.
 - **DNSSEC on at the registrar plus new nameservers = domain stops resolving.** `dns-snapshot.ts` refuses to run while a DS record exists.

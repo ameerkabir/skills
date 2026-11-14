@@ -28,7 +28,7 @@ const HOST_TYPES = ["A", "AAAA", "MX", "TXT"];
 /** Subdomains worth probing: web, common mail hosts, DMARC and DKIM selectors. */
 export const PROBE_HOSTS = [
 	"www", "mail", "webmail", "smtp", "imap", "pop", "autodiscover", "autoconfig", "ftp", "cpanel", "_dmarc",
-	"default._domainkey", "google._domainkey", "selector1._domainkey", "selector2._domainkey", "k1._domainkey",
+	"default._domainkey", "privateemail._domainkey", "google._domainkey", "selector1._domainkey", "selector2._domainkey", "k1._domainkey",
 	"s1._domainkey", "s2._domainkey", "dkim._domainkey", "mail._domainkey", "zoho._domainkey", "protonmail._domainkey",
 ];
 export const PROBE_SRV = ["_autodiscover._tcp", "_submission._tcp", "_imaps._tcp", "_pop3s._tcp", "_sip._tls", "_sipfederationtls._tcp"];
