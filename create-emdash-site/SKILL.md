@@ -19,11 +19,14 @@ Read `SKILL_DIR/variants/<variant>/VARIANT.md` first, then ask with AskUserQuest
 - production domain
 - pages: the variant's default set; which to drop, which extras to add
 - member form fields: keep the default list, plus additions and removals
+- logo: a file path to the organisation's logo (SVG or PNG), or none for a placeholder initials badge, plus the initials to draw on it
 - footer credit in English and Arabic (default `Crafted by Ameer` / `من إبداع أمير`)
 - accent colour; sender email (on a domain onboarded for Cloudflare Email Sending); the address that receives contact-form mail
 - GitHub repo name and visibility
 
-**Done when** every token in VARIANT.md's table has a value. Write those values as `.emdash/site-brief.json` in the new project once it exists (shape: `variants/<variant>/brief.example.json`).
+Check the domain with `dig +short NS <DOMAIN>`. If it prints nothing, the name is probably misspelt: confirm it with the user. If the nameservers aren't `*.ns.cloudflare.com`, the zone must move to Cloudflare before the first deploy; that becomes the first board item.
+
+**Done when** every token in VARIANT.md's table has a value and the domain resolves. Write those values as `.emdash/site-brief.json` in the new project once it exists (shape: `variants/<variant>/brief.example.json`).
 
 ## 2. Scaffold on the latest EmDash
 
@@ -45,7 +48,7 @@ Then `git init` and commit the bare scaffold, so the overlay shows as one review
 node SKILL_DIR/scripts/apply-overlay.mjs SKILL_DIR/variants/<variant> <dir>
 ```
 
-It refuses to run while any token lacks a value. Then make every edit in VARIANT.md's **Config edits** section and run `pnpm install`.
+It refuses to run while any token lacks a value. Then make every edit in VARIANT.md's **Config edits** and **Logo** sections and run `pnpm install`.
 
 **Done when** `grep -rn "%%" <dir> --exclude-dir=node_modules` prints nothing and `pnpm test` is green.
 

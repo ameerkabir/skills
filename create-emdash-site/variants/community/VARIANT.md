@@ -12,10 +12,12 @@ A bilingual community-organisation site: hero home page, about, services, news, 
 | `TAGLINE_EN` / `TAGLINE_AR` | one line each |
 | `DOMAIN` | `example.org` (no scheme) |
 | `ACCENT` | `#0f766e` |
+| `LOGO_INITIALS` | `LS`: drawn on the placeholder `public/logo.svg` badge |
+| `LOGO_PATH` | `/logo.svg` (placeholder), or `/logo.png` etc. when the brief has a `logoFile` |
 | `CREDIT_EN` / `CREDIT_AR` | footer builder credit; default `Crafted by Ameer` / `من إبداع أمير` |
 | `EMDASH_VERSION` | the installed `emdash` version, e.g. `1.5.0` |
 
-The rest of the brief (non-token) records: `projectName`, `pages` (the default set below plus extras), `memberFields` (slugs added or removed from the default list), `emailFrom`, `contactTo`, `github: { repo, visibility }`.
+The rest of the brief (non-token) records: `logoFile` (absolute path to the organisation's logo, or null), `projectName`, `pages` (the default set below plus extras), `memberFields` (slugs added or removed from the default list), `emailFrom`, `contactTo`, `github: { repo, visibility }`.
 
 ## Default pages
 
@@ -65,6 +67,10 @@ The overlay doesn't replace these because the scaffold's versions move with each
 - **`.gitignore`**: add `test-results/` and `playwright-report/`.
 - **`pnpm-workspace.yaml`**: add `packages: ["plugins/*"]`.
 - **Scaffold pages**: replace `resolveStarterSiteIdentity` with `resolveSiteIdentity` (from the overlay's `src/utils/site-identity.ts`) everywhere.
+
+## Logo
+
+The header shows the logo uploaded under **Settings → Logo** in the admin when there is one, otherwise the file at `LOGO_PATH`. With a `logoFile` in the brief, copy it to `public/logo.<ext>` after the overlay, set `LOGO_PATH` to match, and delete the placeholder `public/logo.svg`. Without one, the placeholder badge (initials on the accent colour) ships; list "replace the placeholder logo" on the project board.
 
 ## Page conventions
 

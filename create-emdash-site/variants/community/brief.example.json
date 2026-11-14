@@ -27,8 +27,11 @@
     "TAGLINE_AR": "نجمع مجتمعنا معاً",
     "DOMAIN": "example.org",
     "ACCENT": "#0f766e",
+    "LOGO_INITIALS": "LS",
+    "LOGO_PATH": "/logo.svg",
     "EMDASH_VERSION": "1.5.0",
     "CREDIT_EN": "Crafted by Ameer",
     "CREDIT_AR": "من إبداع أمير"
-  }
+  },
+  "logoFile": null
 }

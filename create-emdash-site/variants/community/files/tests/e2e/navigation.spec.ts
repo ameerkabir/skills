@@ -57,3 +57,10 @@ test("footer carries the builder credit in each language", async ({ page }) => {
 	expect(ar?.trim()).toBeTruthy();
 	expect(ar).not.toBe(en);
 });
+
+test("header shows a logo that loads", async ({ page }) => {
+	await page.goto("/");
+	const logo = page.locator(".site-header__logo");
+	await expect(logo).toBeVisible();
+	expect(await logo.evaluate((img: HTMLImageElement) => img.complete && img.naturalWidth > 0)).toBe(true);
+});

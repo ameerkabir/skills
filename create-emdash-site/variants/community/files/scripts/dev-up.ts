@@ -1,35 +1,50 @@
 #!/usr/bin/env node
-// Start the dev server in the background (if it isn't already up), wait
-// for it, and complete first-run setup with sample content via the dev
-// bypass. Used by the skill's acceptance step and by CI before
-// `pnpm smoke` / `pnpm test:e2e`. Stop it with `npx astro dev stop`.
+// Start this project's dev server in the background (unless it's already
+// running), wait for it, and complete first-run setup with sample content
+// via the dev bypass. Prints the URL; `pnpm smoke` and `pnpm test:e2e` find
+// it themselves. Picks the next free port when 4321 is taken by another
+// site. Stop it with `npx astro dev stop`.
 import { spawnSync } from "node:child_process";
+import { createServer } from "node:net";
+import { projectDevUrl } from "../tests/dev-server.ts";
 
-const base = (process.env.BASE_URL ?? "http://localhost:4321").replace(/\/$/, "");
-const port = new URL(base).port || "4321";
+function portIsFree(port: number): Promise<boolean> {
+	return new Promise((resolve) => {
+		const server = createServer()
+			.once("error", () => resolve(false))
+			.once("listening", () => server.close(() => resolve(true)))
+			.listen(port);
+	});
+}
 
-async function isUp(): Promise<boolean> {
+async function answers(url: string): Promise<boolean> {
 	try {
-		const res = await fetch(base + "/", { signal: AbortSignal.timeout(5000) });
-		return res.status < 500;
+		return (await fetch(url + "/", { signal: AbortSignal.timeout(5000) })).status < 500;
 	} catch {
 		return false;
 	}
 }
 
-if (!(await isUp())) {
-	const started = spawnSync("npx", ["astro", "dev", "--background", "--port", port], { stdio: "inherit" });
+let base = projectDevUrl();
+if (!base) {
+	let port = 4321;
+	while (!(await portIsFree(port))) {
+		port++;
+	}
+	const started = spawnSync("npx", ["astro", "dev", "--background", "--port", String(port)], { stdio: "inherit" });
 	if (started.status !== 0) {
 		process.exit(started.status ?? 1);
 	}
-	const deadline = Date.now() + 120_000;
-	while (!(await isUp())) {
-		if (Date.now() > deadline) {
-			console.error(`Dev server did not answer at ${base} within 120s. See: npx astro dev logs`);
-			process.exit(1);
-		}
-		await new Promise((resolve) => setTimeout(resolve, 1000));
+	base = projectDevUrl() ?? `http://localhost:${port}`;
+}
+
+const deadline = Date.now() + 120_000;
+while (!(await answers(base))) {
+	if (Date.now() > deadline) {
+		console.error(`Dev server did not answer at ${base} within 120s. See: npx astro dev logs`);
+		process.exit(1);
 	}
+	await new Promise((resolve) => setTimeout(resolve, 1000));
 }
 
 // Idempotent: applies the seed with sample content on a fresh database,

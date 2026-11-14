@@ -64,7 +64,8 @@ const pageCtx = createPublicPageContext({
 		<header class="site-header">
 			<div class="site-header__inner">
 				<a href={localizedHref(locale, "/")} class="site-header__brand">
-					{siteLogo?.url && <img src={siteLogo.url} alt={siteLogo.alt || siteTitle} class="site-header__logo" width="40" height="40" />}
+					{/* A logo uploaded under Settings wins; otherwise the bundled file in public/. */}
+					<img src={siteLogo?.url ?? "%%LOGO_PATH%%"} alt={siteLogo?.alt || siteTitle} class="site-header__logo" height="40" />
 					<span>{siteTitle}</span>
 				</a>
 				<button type="button" class="nav-toggle" popovertarget="site-menu" aria-label={t["nav.menu"] ?? "Menu"}>
@@ -139,7 +140,7 @@ const pageCtx = createPublicPageContext({
 		color: var(--color-text);
 		text-decoration: none;
 	}
-	.site-header__logo { height: 40px; width: auto; }
+	.site-header__logo { display: block; height: 40px; width: auto; max-width: 160px; object-fit: contain; }
 
 	/* Mobile: the nav is a Popover API panel toggled by the button (no JS). */
 	.nav-toggle {

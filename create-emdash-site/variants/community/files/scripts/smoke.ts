@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 // HTTP acceptance check against a running site.
 //
-//   node scripts/smoke.ts                         # http://localhost:4321, reads + test form submissions
+//   node scripts/smoke.ts                         # this project's dev server, reads + test form submissions
 //   node scripts/smoke.ts https://example.org     # remote: reads only
 //   node scripts/smoke.ts <url> --write           # remote, also submit the forms (creates [test] rows)
 //
@@ -18,11 +18,17 @@ import {
 	checkHtmlElement,
 	localePath,
 } from "../tests/acceptance.ts";
+import { isLocalUrl, resolveBaseUrl } from "../tests/dev-server.ts";
 
 const args = process.argv.slice(2);
-const base = (args.find((a) => !a.startsWith("--")) ?? process.env.BASE_URL ?? "http://localhost:4321").replace(/\/$/, "");
-const isLocal = /^https?:\/\/(localhost|127\.0\.0\.1)(:|\/|$)/.test(base);
-const write = args.includes("--write") || (isLocal && !args.includes("--read-only"));
+let base: string;
+try {
+	base = resolveBaseUrl(args.find((a) => !a.startsWith("--")) ?? process.env.BASE_URL);
+} catch (err) {
+	console.error((err as Error).message);
+	process.exit(1);
+}
+const write = args.includes("--write") || (isLocalUrl(base) && !args.includes("--read-only"));
 
 const failures: string[] = [];
 let passed = 0;
