@@ -592,6 +592,197 @@
 						}
 					]
 				}
+			},
+			{
+				"id": "contact",
+				"slug": "contact",
+				"locale": "en",
+				"status": "published",
+				"data": {
+					"title": "Contact details",
+					"content": [
+						{
+							"_type": "block",
+							"_key": "k0",
+							"style": "h3",
+							"markDefs": [],
+							"children": [
+								{
+									"_type": "span",
+									"_key": "k0s",
+									"text": "Email",
+									"marks": []
+								}
+							]
+						},
+						{
+							"_type": "block",
+							"_key": "k1",
+							"style": "normal",
+							"markDefs": [],
+							"children": [
+								{
+									"_type": "span",
+									"_key": "k1s",
+									"text": "info@%%DOMAIN%%",
+									"marks": []
+								}
+							]
+						},
+						{
+							"_type": "block",
+							"_key": "k2",
+							"style": "h3",
+							"markDefs": [],
+							"children": [
+								{
+									"_type": "span",
+									"_key": "k2s",
+									"text": "Address",
+									"marks": []
+								}
+							]
+						},
+						{
+							"_type": "block",
+							"_key": "k3",
+							"style": "normal",
+							"markDefs": [],
+							"children": [
+								{
+									"_type": "span",
+									"_key": "k3s",
+									"text": "Replace with your address",
+									"marks": []
+								}
+							]
+						},
+						{
+							"_type": "block",
+							"_key": "k4",
+							"style": "h3",
+							"markDefs": [],
+							"children": [
+								{
+									"_type": "span",
+									"_key": "k4s",
+									"text": "Opening hours",
+									"marks": []
+								}
+							]
+						},
+						{
+							"_type": "block",
+							"_key": "k5",
+							"style": "normal",
+							"markDefs": [],
+							"children": [
+								{
+									"_type": "span",
+									"_key": "k5s",
+									"text": "Replace with your opening hours",
+									"marks": []
+								}
+							]
+						}
+					]
+				}
+			},
+			{
+				"id": "contact-ar",
+				"slug": "contact",
+				"locale": "ar",
+				"translationOf": "contact",
+				"status": "published",
+				"data": {
+					"title": "معلومات التواصل",
+					"content": [
+						{
+							"_type": "block",
+							"_key": "k0",
+							"style": "h3",
+							"markDefs": [],
+							"children": [
+								{
+									"_type": "span",
+									"_key": "k0s",
+									"text": "البريد الإلكتروني",
+									"marks": []
+								}
+							]
+						},
+						{
+							"_type": "block",
+							"_key": "k1",
+							"style": "normal",
+							"markDefs": [],
+							"children": [
+								{
+									"_type": "span",
+									"_key": "k1s",
+									"text": "info@%%DOMAIN%%",
+									"marks": []
+								}
+							]
+						},
+						{
+							"_type": "block",
+							"_key": "k2",
+							"style": "h3",
+							"markDefs": [],
+							"children": [
+								{
+									"_type": "span",
+									"_key": "k2s",
+									"text": "العنوان",
+									"marks": []
+								}
+							]
+						},
+						{
+							"_type": "block",
+							"_key": "k3",
+							"style": "normal",
+							"markDefs": [],
+							"children": [
+								{
+									"_type": "span",
+									"_key": "k3s",
+									"text": "استبدل هذا بعنوانكم",
+									"marks": []
+								}
+							]
+						},
+						{
+							"_type": "block",
+							"_key": "k4",
+							"style": "h3",
+							"markDefs": [],
+							"children": [
+								{
+									"_type": "span",
+									"_key": "k4s",
+									"text": "ساعات العمل",
+									"marks": []
+								}
+							]
+						},
+						{
+							"_type": "block",
+							"_key": "k5",
+							"style": "normal",
+							"markDefs": [],
+							"children": [
+								{
+									"_type": "span",
+									"_key": "k5s",
+									"text": "استبدل هذا بساعات العمل",
+									"marks": []
+								}
+							]
+						}
+					]
+				}
 			}
 		],
 		"homepage": [
@@ -1174,7 +1365,7 @@
 				"data": {
 					"title": "contact.intro",
 					"key": "contact.intro",
-					"text": "Send us a message and we will get back to you."
+					"text": "If you have a query, please contact us using the following form."
 				}
 			},
 			{
@@ -1186,7 +1377,30 @@
 				"data": {
 					"title": "contact.intro",
 					"key": "contact.intro",
-					"text": "أرسل لنا رسالة وسنرد عليك."
+					"text": "إذا كان لديك أي استفسار، يرجى التواصل معنا عبر النموذج التالي."
+				}
+			},
+			{
+				"id": "ui-contact-form-heading",
+				"slug": "ui-contact-form-heading",
+				"locale": "en",
+				"status": "published",
+				"data": {
+					"title": "contact.form_heading",
+					"key": "contact.form_heading",
+					"text": "Send us a message"
+				}
+			},
+			{
+				"id": "ui-contact-form-heading-ar",
+				"slug": "ui-contact-form-heading",
+				"locale": "ar",
+				"translationOf": "ui-contact-form-heading",
+				"status": "published",
+				"data": {
+					"title": "contact.form_heading",
+					"key": "contact.form_heading",
+					"text": "أرسل لنا رسالة"
 				}
 			},
 			{
