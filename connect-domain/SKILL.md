@@ -80,9 +80,17 @@ cf zones settings edit always_use_https -z <domain> --body '{"value":"on"}'   # 
 
 ## 7. Email sending (sites that send mail)
 
-When the site sends from this domain through Cloudflare Email Sending, onboard the domain for sending (the `cloudflare-email-service` skill has the steps). Onboarding adds its own DNS records. Keep exactly **one** SPF TXT at the apex: merge any new `include:` into the existing record.
+Without this, everything the site emails fails, and EmDash reports it as "Failed to create invite" in the admin. When the site sends from this domain (EmDash: `cloudflareEmail()` plus the `send_email` binding), onboard it once the zone is active:
 
-**Done when** onboarding shows verified and `dns-compare.ts <snapshot>` still exits 0 (it flags a second SPF record).
+```bash
+cf email-sending subdomains preview -z <domain> --name <domain>   # the records it will add
+cf email-sending subdomains create  -z <domain> --name <domain>   # adds them
+cf email-sending subdomains dns status -z <domain> <id>           # "errors": [] when healthy
+```
+
+Sending uses its own `cf-bounce` subdomain (MX, SPF, DKIM), so the apex SPF and the mailbox records stay as they were. It also adds `_dmarc` with `p=reject` when there is none. That's safe only when the mailbox provider signs with DKIM for this domain (Namecheap Private Email does, via `privateemail._domainkey`). Have the user send a test from their mailbox to a Gmail address and check **Show original** for SPF, DKIM and DMARC: PASS.
+
+**Done when** `dns status` shows no errors, `dns-compare.ts <snapshot>` still exits 0, and the site sends one email (an admin invite works).
 
 ## 8. Verify end to end
 

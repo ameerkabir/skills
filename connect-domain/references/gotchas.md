@@ -6,11 +6,14 @@
 - **`cf` resolves a domain name passed to `-z`**, so zone IDs are optional.
 - **DKIM selectors are guesses.** DNS can't be listed, so a DKIM key under an unusual selector is invisible to the probe (Namecheap Private Email uses `privateemail._domainkey`, now probed). The registrar's DNS page is the check: every `*._domainkey` host there must be in the snapshot, else `--extra` it. A missing DKIM key sends mail to spam after the switch.
 - **Mail records must be DNS-only.** A proxied MX target or mail CNAME breaks mail; the import never proxies.
-- **One SPF record per name.** Email Sending onboarding, or a second mail provider, adds its own; merge the `include:`s into one TXT.
+- **One SPF record per name.** A second mail provider at the apex means merging the `include:`s into one TXT. Cloudflare Email Sending doesn't touch the apex: its SPF lives on `cf-bounce.<domain>`.
+- **"Failed to create invite" in the EmDash admin** = the invite email couldn't be sent, almost always because the domain isn't onboarded for Email Sending yet (`cf email-sending subdomains list -z <domain>` is `[]`).
+- **Email Sending adds `_dmarc` `p=reject`** if the domain has no DMARC. Mail from the existing mailbox must pass DKIM/SPF alignment, or it starts bouncing.
 - **DNSSEC on at the registrar plus new nameservers = domain stops resolving.** `dns-snapshot.ts` refuses to run while a DS record exists.
 - **The redirect phase PUT replaces every rule in the phase.** `www-redirect.ts` reads the existing rules and appends; don't PUT a single rule by hand.
 - **A redirect rule only sees proxied traffic.** `www` needs a proxied record (the script adds `AAAA 100::`).
 - **Custom domains refuse a hostname with existing records.** Delete leftover apex A/AAAA/CNAME records before the first deploy with `routes`.
 - **Right after activation, HTTPS fails with `sslv3 alert handshake failure`** (curl status `000`). The zone's free edge certificate is still being issued; it usually lands within ~15 minutes, occasionally hours. Test against Cloudflare directly while waiting: `curl --resolve <domain>:443:$(dig +short A <domain> @1.1.1.1 | head -1) https://<domain>/`.
+- **Your own router can lag everyone else.** A home router (`192.168.0.1`) caches the registrar's old answer for its full TTL (Namecheap parking: 30 min) after the rest of the internet sees Cloudflare. `dig <domain> @192.168.0.1` shows the seconds left. Phone on mobile data, or DNS `1.1.1.1`, sees the real site meanwhile.
 - **The Mac's own resolver keeps the registrar's old answer** (e.g. Namecheap parking `162.255.119.85`) until its TTL expires. Judge with `dig @1.1.1.1`, not the browser; `sudo dscacheutil -flushcache; sudo killall -HUP mDNSResponder` clears it locally.
 - **Auth emails use the site URL.** For EmDash, `EMDASH_SITE_URL` set to the domain means magic links point there: hold staff invites until the domain is live.
