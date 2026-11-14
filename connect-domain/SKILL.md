@@ -91,6 +91,8 @@ curl -sI https://<domain> | head -1                          # 200
 curl -sI https://www.<domain> | grep -i -E "^(HTTP|location)" # 301 → https://<domain>/
 ```
 
+Status `000` straight after activation means the edge certificate isn't issued yet (see gotchas): wait for it rather than changing anything.
+
 **Done when** all three pass. Report: the zone ID, the nameservers, the record count copied, the live URL, and anything that still needs the user (DNSSEC re-enable, email onboarding, admin invites now that the site URL is live).
 
 Rollback: set the registrar back to its own DNS (Namecheap: **BasicDNS**) and check its records against the snapshot. Cloudflare's zone can stay pending harmlessly or be deleted.

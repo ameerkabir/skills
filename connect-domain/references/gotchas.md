@@ -11,4 +11,6 @@
 - **The redirect phase PUT replaces every rule in the phase.** `www-redirect.ts` reads the existing rules and appends; don't PUT a single rule by hand.
 - **A redirect rule only sees proxied traffic.** `www` needs a proxied record (the script adds `AAAA 100::`).
 - **Custom domains refuse a hostname with existing records.** Delete leftover apex A/AAAA/CNAME records before the first deploy with `routes`.
+- **Right after activation, HTTPS fails with `sslv3 alert handshake failure`** (curl status `000`). The zone's free edge certificate is still being issued; it usually lands within ~15 minutes, occasionally hours. Test against Cloudflare directly while waiting: `curl --resolve <domain>:443:$(dig +short A <domain> @1.1.1.1 | head -1) https://<domain>/`.
+- **The Mac's own resolver keeps the registrar's old answer** (e.g. Namecheap parking `162.255.119.85`) until its TTL expires. Judge with `dig @1.1.1.1`, not the browser; `sudo dscacheutil -flushcache; sudo killall -HUP mDNSResponder` clears it locally.
 - **Auth emails use the site URL.** For EmDash, `EMDASH_SITE_URL` set to the domain means magic links point there: hold staff invites until the domain is live.
