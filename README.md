@@ -5,6 +5,7 @@ Agent skills (Claude Code / any agent that reads `SKILL.md`).
 | Skill | What it does |
 | --- | --- |
 | [`create-emdash-site`](create-emdash-site/SKILL.md) | Scaffold a new EmDash CMS site on the latest release from a variant, then create its GitHub repo, CI/CD and launch board. Variants: `community` (bilingual en/ar: home with hero, about, services, news, contact, member registration). |
+| [`connect-domain`](connect-domain/SKILL.md) | Connect a registrar domain (Namecheap etc.) to a Cloudflare Worker: snapshot DNS, create the zone, copy email records, switch nameservers, attach the Worker, `www` redirect, verify. Registration and email stay at the registrar. |
 
 ## Install
 

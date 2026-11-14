@@ -24,7 +24,7 @@ Read `SKILL_DIR/variants/<variant>/VARIANT.md` first, then ask with AskUserQuest
 - accent colour; sender email (on a domain onboarded for Cloudflare Email Sending); the address that receives contact-form mail
 - GitHub repo name and visibility
 
-Check the domain with `dig +short NS <DOMAIN>`. If it prints nothing, the name is probably misspelt: confirm it with the user. If the nameservers aren't `*.ns.cloudflare.com`, the zone must move to Cloudflare before the first deploy; that becomes the first board item.
+Check the domain with `dig +short NS <DOMAIN>`. If it prints nothing, the name is probably misspelt: confirm it with the user. If the nameservers aren't `*.ns.cloudflare.com`, the zone must move to Cloudflare before the first deploy: that's the `connect-domain` skill, and it becomes the first board item.
 
 **Done when** every token in VARIANT.md's table has a value and the domain resolves. Write those values as `.emdash/site-brief.json` in the new project once it exists (shape: `variants/<variant>/brief.example.json`).
 
