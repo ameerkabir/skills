@@ -35,7 +35,8 @@
 					"type": "portableText",
 					"searchable": true
 				}
-			]
+			],
+			"urlPattern": "/{slug}"
 		},
 		{
 			"slug": "posts",
@@ -71,7 +72,8 @@
 					"type": "portableText",
 					"searchable": true
 				}
-			]
+			],
+			"urlPattern": "/posts/{slug}"
 		},
 		{
 			"slug": "services",
@@ -353,6 +355,106 @@
 					"type": "boolean"
 				}
 			]
+		},
+		{
+			"slug": "events",
+			"label": "Events",
+			"labelSingular": "Event",
+			"icon": "calendar",
+			"description": "Community events with text, photo albums and videos",
+			"supports": [
+				"drafts",
+				"revisions",
+				"search",
+				"seo"
+			],
+			"fields": [
+				{
+					"slug": "title",
+					"label": "Title",
+					"type": "string",
+					"required": true,
+					"searchable": true
+				},
+				{
+					"slug": "date",
+					"label": "Date",
+					"type": "datetime",
+					"required": true
+				},
+				{
+					"slug": "location",
+					"label": "Location",
+					"type": "string"
+				},
+				{
+					"slug": "featured_image",
+					"label": "Featured image",
+					"type": "image"
+				},
+				{
+					"slug": "excerpt",
+					"label": "Excerpt",
+					"type": "text",
+					"description": "Short summary shown on the events list"
+				},
+				{
+					"slug": "content",
+					"label": "Content",
+					"type": "portableText",
+					"searchable": true
+				},
+				{
+					"slug": "gallery",
+					"label": "Photos",
+					"type": "repeater",
+					"translatable": false,
+					"description": "Add photos. Give photos the same Album name to group them into an album.",
+					"validation": {
+						"subFields": [
+							{
+								"slug": "photo",
+								"type": "image",
+								"label": "Photo",
+								"required": true
+							},
+							{
+								"slug": "caption",
+								"type": "string",
+								"label": "Caption"
+							},
+							{
+								"slug": "album",
+								"type": "string",
+								"label": "Album name"
+							}
+						]
+					}
+				},
+				{
+					"slug": "videos",
+					"label": "Videos",
+					"type": "repeater",
+					"translatable": false,
+					"description": "YouTube or Vimeo links, or a direct .mp4/.webm link.",
+					"validation": {
+						"subFields": [
+							{
+								"slug": "url",
+								"type": "string",
+								"label": "Video link",
+								"required": true
+							},
+							{
+								"slug": "title",
+								"type": "string",
+								"label": "Title"
+							}
+						]
+					}
+				}
+			],
+			"urlPattern": "/events/{slug}"
 		}
 	],
 	"taxonomies": [
@@ -442,6 +544,11 @@
 				},
 				{
 					"type": "custom",
+					"label": "Events",
+					"url": "/events"
+				},
+				{
+					"type": "custom",
 					"label": "News",
 					"url": "/posts"
 				},
@@ -478,6 +585,11 @@
 					"type": "custom",
 					"label": "خدماتنا",
 					"url": "/services"
+				},
+				{
+					"type": "custom",
+					"label": "الفعاليات",
+					"url": "/events"
 				},
 				{
 					"type": "custom",
@@ -1815,6 +1927,436 @@
 					"title": "404.home",
 					"key": "404.home",
 					"text": "العودة إلى الرئيسية"
+				}
+			},
+			{
+				"id": "ui-services-read_more",
+				"slug": "ui-services-read_more",
+				"locale": "en",
+				"status": "published",
+				"data": {
+					"title": "services.read_more",
+					"key": "services.read_more",
+					"text": "Learn more"
+				}
+			},
+			{
+				"id": "ui-services-read_more-ar",
+				"slug": "ui-services-read_more",
+				"locale": "ar",
+				"translationOf": "ui-services-read_more",
+				"status": "published",
+				"data": {
+					"title": "services.read_more",
+					"key": "services.read_more",
+					"text": "اعرف المزيد"
+				}
+			},
+			{
+				"id": "ui-services-back",
+				"slug": "ui-services-back",
+				"locale": "en",
+				"status": "published",
+				"data": {
+					"title": "services.back",
+					"key": "services.back",
+					"text": "← All services"
+				}
+			},
+			{
+				"id": "ui-services-back-ar",
+				"slug": "ui-services-back",
+				"locale": "ar",
+				"translationOf": "ui-services-back",
+				"status": "published",
+				"data": {
+					"title": "services.back",
+					"key": "services.back",
+					"text": "← جميع الخدمات"
+				}
+			},
+			{
+				"id": "ui-events-heading",
+				"slug": "ui-events-heading",
+				"locale": "en",
+				"status": "published",
+				"data": {
+					"title": "events.heading",
+					"key": "events.heading",
+					"text": "Events"
+				}
+			},
+			{
+				"id": "ui-events-heading-ar",
+				"slug": "ui-events-heading",
+				"locale": "ar",
+				"translationOf": "ui-events-heading",
+				"status": "published",
+				"data": {
+					"title": "events.heading",
+					"key": "events.heading",
+					"text": "الفعاليات"
+				}
+			},
+			{
+				"id": "ui-events-intro",
+				"slug": "ui-events-intro",
+				"locale": "en",
+				"status": "published",
+				"data": {
+					"title": "events.intro",
+					"key": "events.intro",
+					"text": "What we are planning, and what we have done together."
+				}
+			},
+			{
+				"id": "ui-events-intro-ar",
+				"slug": "ui-events-intro",
+				"locale": "ar",
+				"translationOf": "ui-events-intro",
+				"status": "published",
+				"data": {
+					"title": "events.intro",
+					"key": "events.intro",
+					"text": "ما نخطط له وما أنجزناه معاً."
+				}
+			},
+			{
+				"id": "ui-events-upcoming",
+				"slug": "ui-events-upcoming",
+				"locale": "en",
+				"status": "published",
+				"data": {
+					"title": "events.upcoming",
+					"key": "events.upcoming",
+					"text": "Upcoming events"
+				}
+			},
+			{
+				"id": "ui-events-upcoming-ar",
+				"slug": "ui-events-upcoming",
+				"locale": "ar",
+				"translationOf": "ui-events-upcoming",
+				"status": "published",
+				"data": {
+					"title": "events.upcoming",
+					"key": "events.upcoming",
+					"text": "الفعاليات القادمة"
+				}
+			},
+			{
+				"id": "ui-events-past",
+				"slug": "ui-events-past",
+				"locale": "en",
+				"status": "published",
+				"data": {
+					"title": "events.past",
+					"key": "events.past",
+					"text": "Past events"
+				}
+			},
+			{
+				"id": "ui-events-past-ar",
+				"slug": "ui-events-past",
+				"locale": "ar",
+				"translationOf": "ui-events-past",
+				"status": "published",
+				"data": {
+					"title": "events.past",
+					"key": "events.past",
+					"text": "الفعاليات السابقة"
+				}
+			},
+			{
+				"id": "ui-events-empty",
+				"slug": "ui-events-empty",
+				"locale": "en",
+				"status": "published",
+				"data": {
+					"title": "events.empty",
+					"key": "events.empty",
+					"text": "No events yet. Check back soon."
+				}
+			},
+			{
+				"id": "ui-events-empty-ar",
+				"slug": "ui-events-empty",
+				"locale": "ar",
+				"translationOf": "ui-events-empty",
+				"status": "published",
+				"data": {
+					"title": "events.empty",
+					"key": "events.empty",
+					"text": "لا توجد فعاليات بعد. تابعونا قريباً."
+				}
+			},
+			{
+				"id": "ui-events-photos",
+				"slug": "ui-events-photos",
+				"locale": "en",
+				"status": "published",
+				"data": {
+					"title": "events.photos",
+					"key": "events.photos",
+					"text": "Photos"
+				}
+			},
+			{
+				"id": "ui-events-photos-ar",
+				"slug": "ui-events-photos",
+				"locale": "ar",
+				"translationOf": "ui-events-photos",
+				"status": "published",
+				"data": {
+					"title": "events.photos",
+					"key": "events.photos",
+					"text": "الصور"
+				}
+			},
+			{
+				"id": "ui-events-videos",
+				"slug": "ui-events-videos",
+				"locale": "en",
+				"status": "published",
+				"data": {
+					"title": "events.videos",
+					"key": "events.videos",
+					"text": "Videos"
+				}
+			},
+			{
+				"id": "ui-events-videos-ar",
+				"slug": "ui-events-videos",
+				"locale": "ar",
+				"translationOf": "ui-events-videos",
+				"status": "published",
+				"data": {
+					"title": "events.videos",
+					"key": "events.videos",
+					"text": "الفيديوهات"
+				}
+			},
+			{
+				"id": "ui-events-watch",
+				"slug": "ui-events-watch",
+				"locale": "en",
+				"status": "published",
+				"data": {
+					"title": "events.watch",
+					"key": "events.watch",
+					"text": "Watch video"
+				}
+			},
+			{
+				"id": "ui-events-watch-ar",
+				"slug": "ui-events-watch",
+				"locale": "ar",
+				"translationOf": "ui-events-watch",
+				"status": "published",
+				"data": {
+					"title": "events.watch",
+					"key": "events.watch",
+					"text": "شاهد الفيديو"
+				}
+			},
+			{
+				"id": "ui-events-back",
+				"slug": "ui-events-back",
+				"locale": "en",
+				"status": "published",
+				"data": {
+					"title": "events.back",
+					"key": "events.back",
+					"text": "← All events"
+				}
+			},
+			{
+				"id": "ui-events-back-ar",
+				"slug": "ui-events-back",
+				"locale": "ar",
+				"translationOf": "ui-events-back",
+				"status": "published",
+				"data": {
+					"title": "events.back",
+					"key": "events.back",
+					"text": "← جميع الفعاليات"
+				}
+			},
+			{
+				"id": "ui-events-gallery-close",
+				"slug": "ui-events-gallery-close",
+				"locale": "en",
+				"status": "published",
+				"data": {
+					"title": "events.gallery_close",
+					"key": "events.gallery_close",
+					"text": "Close"
+				}
+			},
+			{
+				"id": "ui-events-gallery-close-ar",
+				"slug": "ui-events-gallery-close",
+				"locale": "ar",
+				"translationOf": "ui-events-gallery-close",
+				"status": "published",
+				"data": {
+					"title": "events.gallery_close",
+					"key": "events.gallery_close",
+					"text": "إغلاق"
+				}
+			},
+			{
+				"id": "ui-events-gallery-prev",
+				"slug": "ui-events-gallery-prev",
+				"locale": "en",
+				"status": "published",
+				"data": {
+					"title": "events.gallery_prev",
+					"key": "events.gallery_prev",
+					"text": "Previous photo"
+				}
+			},
+			{
+				"id": "ui-events-gallery-prev-ar",
+				"slug": "ui-events-gallery-prev",
+				"locale": "ar",
+				"translationOf": "ui-events-gallery-prev",
+				"status": "published",
+				"data": {
+					"title": "events.gallery_prev",
+					"key": "events.gallery_prev",
+					"text": "الصورة السابقة"
+				}
+			},
+			{
+				"id": "ui-events-gallery-next",
+				"slug": "ui-events-gallery-next",
+				"locale": "en",
+				"status": "published",
+				"data": {
+					"title": "events.gallery_next",
+					"key": "events.gallery_next",
+					"text": "Next photo"
+				}
+			},
+			{
+				"id": "ui-events-gallery-next-ar",
+				"slug": "ui-events-gallery-next",
+				"locale": "ar",
+				"translationOf": "ui-events-gallery-next",
+				"status": "published",
+				"data": {
+					"title": "events.gallery_next",
+					"key": "events.gallery_next",
+					"text": "الصورة التالية"
+				}
+			}
+		],
+		"events": [
+			{
+				"id": "evt-gathering",
+				"slug": "community-gathering",
+				"locale": "en",
+				"status": "published",
+				"data": {
+					"title": "Community gathering",
+					"date": "2027-03-20T14:00:00.000Z",
+					"location": "Community centre",
+					"excerpt": "An afternoon together for the whole community.",
+					"content": [
+						{
+							"_type": "block",
+							"_key": "k0",
+							"style": "normal",
+							"children": [
+								{
+									"_type": "span",
+									"_key": "k0s",
+									"text": "Describe the event here. Add photos, albums and videos in the fields below the text."
+								}
+							]
+						}
+					]
+				}
+			},
+			{
+				"id": "evt-gathering-ar",
+				"slug": "community-gathering",
+				"locale": "ar",
+				"translationOf": "evt-gathering",
+				"status": "published",
+				"data": {
+					"title": "لقاء المجتمع",
+					"date": "2027-03-20T14:00:00.000Z",
+					"location": "مركز الجالية",
+					"excerpt": "فعالية تجمع أبناء الجالية.",
+					"content": [
+						{
+							"_type": "block",
+							"_key": "k0",
+							"style": "normal",
+							"children": [
+								{
+									"_type": "span",
+									"_key": "k0s",
+									"text": "اكتب وصف الفعالية هنا. أضف الصور والألبومات والفيديوهات من الحقول أسفل النص."
+								}
+							]
+						}
+					]
+				}
+			},
+			{
+				"id": "evt-past",
+				"slug": "past-event",
+				"locale": "en",
+				"status": "published",
+				"data": {
+					"title": "A past event",
+					"date": "2026-06-01T11:00:00.000Z",
+					"location": "Community centre",
+					"excerpt": "A look back at an event we held.",
+					"content": [
+						{
+							"_type": "block",
+							"_key": "k0",
+							"style": "normal",
+							"children": [
+								{
+									"_type": "span",
+									"_key": "k0s",
+									"text": "Replace this with the story of the day."
+								}
+							]
+						}
+					]
+				}
+			},
+			{
+				"id": "evt-past-ar",
+				"slug": "past-event",
+				"locale": "ar",
+				"translationOf": "evt-past",
+				"status": "published",
+				"data": {
+					"title": "فعالية سابقة",
+					"date": "2026-06-01T11:00:00.000Z",
+					"location": "مركز الجالية",
+					"excerpt": "نظرة على فعالية أقمناها.",
+					"content": [
+						{
+							"_type": "block",
+							"_key": "k0",
+							"style": "normal",
+							"children": [
+								{
+									"_type": "span",
+									"_key": "k0s",
+									"text": "استبدل هذا النص بقصة اليوم."
+								}
+							]
+						}
+					]
 				}
 			}
 		]

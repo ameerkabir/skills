@@ -27,9 +27,10 @@ The overlay ships all of these pages, tested together. Adapt them to the brief; 
 | --- | --- | --- |
 | Home | `/` | `homepage` entry `home`: hero (kicker, heading, body, `hero_image`), 3 intro cards, latest 3 `posts`, CTA → `/register` |
 | About | `/about` | `pages` via the scaffold's `[slug].astro` |
-| Services | `/services` | `services` ordered by `sort_order`, as `.card-grid` cards |
+| Services | `/services`, `/services/[slug]` | `services` ordered by `sort_order`; each card links to its own page |
+| Events | `/events`, `/events/[slug]` | `events`: upcoming + past lists; detail page with rich text, photo albums (`gallery` repeater, lightbox) and videos (`videos` repeater: YouTube/Vimeo/direct file) |
 | News | `/posts`, `/posts/[slug]` | `posts`; category/tag archives from the scaffold |
-| Contact | `/contact` | form → `site-forms/contact` |
+| Contact | `/contact` | CMS contact details (`pages` entry `contact`) beside the form → `site-forms/contact` |
 | Join | `/register`, `/register/success` | form rendered from `MEMBER_FIELDS` → `site-forms/register` |
 | 404 | `/404` | `404.*` ui_strings, link home |
 
@@ -68,6 +69,14 @@ The overlay doesn't replace these because the scaffold's versions move with each
 - **`pnpm-workspace.yaml`**: add `packages: ["plugins/*"]`.
 - **Scaffold pages**: replace `resolveStarterSiteIdentity` with `resolveSiteIdentity` (from the overlay's `src/utils/site-identity.ts`) everywhere.
 
+## Search engines
+
+`Base.astro` emits one self-referencing canonical per page (built from the locale, since the middleware rewrites `/ar/x` to `/x`), `hreflang` en/ar/x-default on non-content pages (EmDash does content pages), `Organization` JSON-LD on the home page, the logo as default share image, and `noindex` when a page passes `noindex` (the 404 and form confirmations do). `src/utils/seo.ts` holds the tested logic. The public origin is `EMDASH_SITE_URL` from `wrangler.jsonc`.
+
+The seed sets `urlPattern` on `pages` (`/{slug}`), `posts` and `events`. Without it the sitemap lists `/pages/about`, which 404s. `sync-schema.mjs` applies a seed `urlPattern` to existing collections that lack one. `sync-content.mjs` also makes sure the primary menu links to `/events`, because menus are database content and a seed edit never reaches a live site.
+
+A new site starts in **staging**, which serves `noindex` on every page until it goes live. Taking it live and getting indexed is the `emdash-seo-launch` skill's job.
+
 ## Logo
 
 The header shows the logo uploaded under **Settings → Logo** in the admin when there is one, otherwise the file at `LOGO_PATH`. With a `logoFile` in the brief, copy it to `public/logo.<ext>` after the overlay, set `LOGO_PATH` to match, and delete the placeholder `public/logo.svg`. Without one, the placeholder badge (initials on the accent colour) ships; list "replace the placeholder logo" on the project board.
@@ -87,6 +96,10 @@ Forms are a `<form data-endpoint=...>` with `data-msg-*` attributes. `src/script
 ## Members form
 
 `plugins/site-forms/src/member-fields.ts` is the single source of truth: labels (en/ar), types, required flags, select options. Apply the brief's `memberFields` changes there **and** in the `members` collection in `seed/seed.json` together. `plugins/site-forms/src/member-fields.test.ts` goes red on any drift. The register page maps over `MEMBER_FIELDS` (imported from `site-forms/member-fields`) to render inputs, using `label[locale]` and `dir`.
+
+## Events
+
+Staff add an event under **Events**: date, location, text, then `Photos` rows (photo, caption, and an optional **Album name**: rows sharing a name show as one album) and `Videos` rows (a YouTube or Vimeo link, a direct `.mp4`/`.webm` link, or any https link, which renders as a button). Photos and videos are shared by both languages (`translatable: false`); title, text, location and excerpt are translated. `src/utils/video.ts` rebuilds YouTube/Vimeo links as embed URLs and never puts any other host in an iframe. To drop events, remove the whole page set listed under "To drop a page", plus `src/pages/events/`, `src/scripts/lightbox.ts` and the `/events` menu link in `sync-content.mjs`.
 
 ## Acceptance
 

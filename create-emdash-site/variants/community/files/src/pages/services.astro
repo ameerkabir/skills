@@ -1,7 +1,8 @@
 ---
 import { getEmDashCollection } from "emdash";
-import { Image, PortableText } from "emdash/ui";
+import { Image } from "emdash/ui";
 import Base from "../layouts/Base.astro";
+import { localizedHref } from "../utils/localized-href";
 import { getUiStrings } from "../utils/ui-strings";
 
 const locale = Astro.locals.locale;
@@ -22,9 +23,11 @@ if (Astro.cache?.enabled) {
 		{services.map((service) => (
 			<article class="card" id={service.id}>
 				{service.data.image && <Image image={service.data.image} />}
-				<h2 {...service.edit.title}>{service.data.title}</h2>
+				<h2 {...service.edit.title}>
+					<a class="card__link" href={localizedHref(locale, `/services/${service.data.slug ?? service.id}`)}>{service.data.title}</a>
+				</h2>
 				{service.data.summary && <p class="summary">{service.data.summary}</p>}
-				<PortableText value={service.data.content} />
+				<span class="more" aria-hidden="true">{t["services.read_more"] ?? "Learn more"} →</span>
 			</article>
 		))}
 	</div>
@@ -32,6 +35,13 @@ if (Astro.cache?.enabled) {
 
 <style>
 	.lead { color: var(--color-text-muted); margin-bottom: 2rem; }
+	.card { position: relative; }
+	.card:hover, .card:focus-within { border-color: var(--color-accent); }
 	.card h2 { font-size: 1.25rem; }
+	.card__link { color: inherit; text-decoration: none; }
+	/* stretch the title link over the whole card */
+	.card__link::after { content: ""; position: absolute; inset: 0; }
 	.summary { font-weight: 600; }
+	.more { color: var(--color-accent); font-weight: 600; }
+	:global([dir="rtl"]) .more { display: inline-block; }
 </style>

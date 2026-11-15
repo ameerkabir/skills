@@ -83,4 +83,6 @@ Report back with:
 - any deviation from the brief
 - the first three board items
 
+A new site is in **staging** and tells search engines not to index it. Taking it live and getting it into Google is the `emdash-seo-launch` skill: mention it to the user as the follow-up.
+
 Pitfalls this skill has already paid for are in `references/gotchas.md`; read it when something behaves unexpectedly.

@@ -7,7 +7,7 @@ const locale = Astro.locals.locale;
 const t = await getUiStrings(locale);
 ---
 
-<Base title={t["register.success_heading"] ?? "Registration received"}>
+<Base title={t["register.success_heading"] ?? "Registration received"} noindex>
 	<div class="notice notice--success">
 		<h1>{t["register.success_heading"] ?? "Registration received"}</h1>
 		<p>{t["register.success_body"] ?? "Thank you. We will review your registration and be in touch."}</p>

@@ -3,6 +3,7 @@ import { getEmDashEntry, getSeoMeta, decodeSlug, getSiteSettings } from "emdash"
 import { Image, PortableText } from "emdash/ui";
 import Base from "../../layouts/Base.astro";
 import { resolveSiteIdentity } from "../../utils/site-identity";
+import { getSiteOrigin } from "../../utils/site-url";
 import { localizedHref } from "../../utils/localized-href";
 
 const locale = Astro.locals.locale;
@@ -18,7 +19,7 @@ if (Astro.cache?.enabled) {
 	Astro.cache.set(cacheHint);
 }
 const { siteTitle } = resolveSiteIdentity(await getSiteSettings(), locale);
-const seo = getSeoMeta(post, { siteTitle, siteUrl: Astro.url.origin, path: `/posts/${slug}` });
+const seo = getSeoMeta(post, { siteTitle, siteUrl: getSiteOrigin(Astro.url.origin), path: localizedHref(locale, `/posts/${slug}`).replace(/\/$/, "") });
 const categories = post.data.terms?.category ?? [];
 ---
 

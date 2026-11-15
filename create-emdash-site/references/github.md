@@ -32,6 +32,7 @@ Create one issue per item below with `gh issue create --repo <owner>/<repo> --ti
 5. Create an EmDash API token (schema + content read/write scopes) and add the GitHub secrets: `EMDASH_TOKEN`, `CLOUDFLARE_API_TOKEN`, `CLOUDFLARE_ACCOUNT_ID`. Then `gh variable set DEPLOY_ENABLED --body true`.
 6. Replace the sample content: homepage hero image and text, About, Services, the first news post. Do this in both languages.
 7. Invite staff as EmDash users (Contributor or above). Members never get accounts.
+8. Go live in search: turn off staging, fix the sitemap, verify in Google Search Console. Use the `emdash-seo-launch` skill.
 
 ## Secrets list to print
 

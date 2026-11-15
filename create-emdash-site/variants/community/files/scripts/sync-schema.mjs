@@ -69,7 +69,8 @@ async function createFieldViaRest(collectionSlug, field) {
 	}
 	const res = await fetch(`${url}/_emdash/api/schema/collections/${collectionSlug}/fields`, {
 		method: "POST",
-		headers: { "Content-Type": "application/json", Authorization: `Bearer ${token}` },
+		// X-EmDash-Request is EmDash's CSRF marker; writes without it get CSRF_REJECTED.
+		headers: { "Content-Type": "application/json", "X-EmDash-Request": "1", Authorization: `Bearer ${token}` },
 		body: JSON.stringify(body),
 	});
 	if (!res.ok) {
@@ -107,9 +108,34 @@ async function syncCollection(seedCollection, existingCollections) {
 		emdash(args);
 	} else {
 		console.log(`[skip] collection "${slug}" already exists`);
+		await syncUrlPattern(seedCollection, remote);
 	}
 
 	await syncFields(slug, seedCollection.fields ?? []);
+}
+
+// The sitemap and hreflang tags build public URLs from a collection's
+// urlPattern. Without one EmDash assumes /<collection>/<slug>, which is wrong
+// for `pages` (served at /<slug>). Existing collections only get a pattern
+// the seed declares and the site lacks; an admin's own choice is never changed.
+async function syncUrlPattern(seedCollection, remote) {
+	if (!seedCollection.urlPattern || remote.urlPattern) {
+		return;
+	}
+	const token = process.env.EMDASH_TOKEN;
+	if (!token) {
+		throw new Error(`EMDASH_TOKEN is required to set the URL pattern on "${seedCollection.slug}"`);
+	}
+	console.log(`  [update] collection "${seedCollection.slug}" urlPattern -> ${seedCollection.urlPattern}`);
+	const res = await fetch(`${process.env.EMDASH_URL}/_emdash/api/schema/collections/${seedCollection.slug}`, {
+		method: "PUT",
+		// X-EmDash-Request is EmDash's CSRF marker; writes without it get CSRF_REJECTED.
+		headers: { "Content-Type": "application/json", "X-EmDash-Request": "1", Authorization: `Bearer ${token}` },
+		body: JSON.stringify({ urlPattern: seedCollection.urlPattern }),
+	});
+	if (!res.ok) {
+		throw new Error(`Failed to set urlPattern on "${seedCollection.slug}": ${res.status} ${await res.text()}`);
+	}
 }
 
 async function syncFields(collectionSlug, seedFields) {

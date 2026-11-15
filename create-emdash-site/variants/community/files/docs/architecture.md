@@ -14,7 +14,8 @@ EmDash %%EMDASH_VERSION%% on Astro, deployed to Cloudflare Workers (D1 database 
 | --- | --- |
 | `homepage` | One entry per locale (slug `home`): hero, intro cards, CTA |
 | `pages` | Static pages such as `/about` |
-| `services` | Cards on `/services`, ordered by `sort_order` |
+| `services` | Cards on `/services` (each opens `/services/[slug]`), ordered by `sort_order` |
+| `events` | `/events` (upcoming + past) and `/events/[slug]`: text, a `gallery` repeater (photo, caption, album name; same album name = one album, lightbox on click) and a `videos` repeater (YouTube/Vimeo/direct file; see `src/utils/video.ts`) |
 | `posts` | News (`/posts`), with `category` and `tag` taxonomies |
 | `ui_strings` | Translatable microcopy keyed by `key` |
 | `members` | Registrations from `/register` (admin-only) |

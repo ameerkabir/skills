@@ -1,0 +1,46 @@
+---
+import { getEmDashEntry, getSeoMeta, decodeSlug, getSiteSettings } from "emdash";
+import { Image, PortableText } from "emdash/ui";
+import Base from "../../layouts/Base.astro";
+import { resolveSiteIdentity } from "../../utils/site-identity";
+import { getSiteOrigin } from "../../utils/site-url";
+import { localizedHref } from "../../utils/localized-href";
+import { getUiStrings } from "../../utils/ui-strings";
+
+const locale = Astro.locals.locale;
+const t = await getUiStrings(locale);
+const slug = decodeSlug(Astro.params.slug);
+if (!slug) {
+	return Astro.rewrite(localizedHref(locale, "/404"));
+}
+const { entry: service, cacheHint } = await getEmDashEntry("services", slug, { locale });
+if (!service) {
+	return Astro.rewrite(localizedHref(locale, "/404"));
+}
+if (Astro.cache?.enabled) {
+	Astro.cache.set(cacheHint);
+}
+const { siteTitle } = resolveSiteIdentity(await getSiteSettings(), locale);
+const seo = getSeoMeta(service, { siteTitle, siteUrl: getSiteOrigin(Astro.url.origin), path: localizedHref(locale, `/services/${slug}`).replace(/\/$/, "") });
+---
+
+<Base
+	title={service.data.title}
+	description={service.data.summary ?? seo.description}
+	canonical={seo.canonical}
+	image={seo.ogImage}
+	content={{ collection: "services", id: service.data.id, slug }}
+	routePrefix="/services"
+>
+	<article class="prose">
+		<p><a href={localizedHref(locale, "/services")}>{t["services.back"] ?? "← All services"}</a></p>
+		{service.data.image && <div {...service.edit.image}><Image image={service.data.image} /></div>}
+		<h1 {...service.edit.title}>{service.data.title}</h1>
+		{service.data.summary && <p class="summary">{service.data.summary}</p>}
+		<PortableText value={service.data.content} />
+	</article>
+</Base>
+
+<style>
+	.summary { font-size: 1.15rem; color: var(--color-text-muted); }
+</style>

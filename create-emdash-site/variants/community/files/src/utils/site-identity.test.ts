@@ -28,4 +28,9 @@ describe("resolveSiteIdentity", () => {
 		expect(withUrl.siteLogo).toEqual({ mediaId: "1", url: "https://example.com/logo.png" });
 		expect(resolveSiteIdentity({ logo: { mediaId: "1" } }, "en", {}).siteLogo).toBeNull();
 	});
+
+	it("resolves the favicon url only when one is set", () => {
+		expect(resolveSiteIdentity({ favicon: { mediaId: "2", url: "/icon.jpeg" } }, "en", {}).siteFavicon).toBe("/icon.jpeg");
+		expect(resolveSiteIdentity({}, "en", {}).siteFavicon).toBeNull();
+	});
 });

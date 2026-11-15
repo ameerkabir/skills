@@ -64,3 +64,47 @@ test("header shows a logo that loads", async ({ page }) => {
 	await expect(logo).toBeVisible();
 	expect(await logo.evaluate((img: HTMLImageElement) => img.complete && img.naturalWidth > 0)).toBe(true);
 });
+
+test("a service card opens its own page", async ({ page }) => {
+	await page.goto("/services");
+	await page.locator(".card__link").first().click();
+	await expect(page).toHaveURL(/\/services\/[^/]+\/?$/);
+	await expect(page.locator("h1")).toBeVisible();
+	await page.goto("/ar/services");
+	await page.locator(".card__link").first().click();
+	await expect(page).toHaveURL(/\/ar\/services\/[^/]+\/?$/);
+});
+
+test("contact page shows CMS details beside the form", async ({ page }) => {
+	await page.goto("/contact");
+	await expect(page.locator(".contact-details")).toBeVisible();
+	await expect(page.locator("form[data-endpoint]")).toBeVisible();
+});
+
+test("events list splits upcoming and past and opens an event", async ({ page }) => {
+	await page.goto("/events");
+	await expect(page.locator("h2", { hasText: /upcoming/i })).toBeVisible();
+	await expect(page.locator("h2", { hasText: /past/i })).toBeVisible();
+	await page.locator(".event-card a.card__link").first().click();
+	await expect(page).toHaveURL(/\/events\/[^/]+\/?$/);
+	await expect(page.locator("h1")).toBeVisible();
+	await page.goto("/ar/events");
+	await page.locator(".event-card a.card__link").first().click();
+	await expect(page).toHaveURL(/\/ar\/events\/[^/]+\/?$/);
+});
+
+test("each language canonicalises to itself and links its alternate", async ({ page }) => {
+	for (const [path, canonical] of [["/services", "/services"], ["/ar/services", "/ar/services"], ["/ar", "/ar"]] as const) {
+		await page.goto(path);
+		await expect(page.locator('link[rel="canonical"]')).toHaveCount(1);
+		await expect(page.locator('link[rel="canonical"]')).toHaveAttribute("href", new RegExp(`${canonical}$`));
+		await expect(page.locator('link[rel="alternate"][hreflang="x-default"]')).toHaveCount(1);
+	}
+});
+
+test("404 and form confirmation pages are noindex", async ({ page }) => {
+	await page.goto("/this-page-does-not-exist");
+	await expect(page.locator('meta[name="robots"]')).toHaveAttribute("content", /noindex/);
+	await page.goto("/register/success");
+	await expect(page.locator('meta[name="robots"]')).toHaveAttribute("content", /noindex/);
+});

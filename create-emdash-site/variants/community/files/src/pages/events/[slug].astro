@@ -1,0 +1,160 @@
+---
+import { getEmDashEntry, getSeoMeta, decodeSlug, getSiteSettings } from "emdash";
+import { Image, PortableText } from "emdash/ui";
+import Base from "../../layouts/Base.astro";
+import { extractGalleryPhotos, groupAlbums } from "../../utils/media";
+import { getSiteOrigin } from "../../utils/site-url";
+import { localizedHref } from "../../utils/localized-href";
+import { resolveSiteIdentity } from "../../utils/site-identity";
+import { getUiStrings } from "../../utils/ui-strings";
+import { extractVideos } from "../../utils/video";
+
+const locale = Astro.locals.locale;
+const t = await getUiStrings(locale);
+const slug = decodeSlug(Astro.params.slug);
+if (!slug) {
+	return Astro.rewrite(localizedHref(locale, "/404"));
+}
+const { entry: event, cacheHint } = await getEmDashEntry("events", slug, { locale });
+if (!event) {
+	return Astro.rewrite(localizedHref(locale, "/404"));
+}
+if (Astro.cache?.enabled) {
+	Astro.cache.set(cacheHint);
+}
+const { siteTitle } = resolveSiteIdentity(await getSiteSettings(), locale, t);
+const seo = getSeoMeta(event, { siteTitle, siteUrl: getSiteOrigin(Astro.url.origin), path: localizedHref(locale, `/events/${slug}`).replace(/\/$/, "") });
+
+const photos = extractGalleryPhotos(event.data.gallery);
+const albums = groupAlbums(photos);
+const videos = extractVideos(event.data.videos);
+const dateText = event.data.date
+	? new Date(String(event.data.date)).toLocaleDateString(locale, { year: "numeric", month: "long", day: "numeric" })
+	: "";
+---
+
+<Base
+	title={event.data.title}
+	description={event.data.excerpt ?? seo.description}
+	canonical={seo.canonical}
+	image={seo.ogImage}
+	content={{ collection: "events", id: event.data.id, slug }}
+	routePrefix="/events"
+>
+	<article class="event">
+		<p><a href={localizedHref(locale, "/events")}>{t["events.back"] ?? "← All events"}</a></p>
+		<header class="event__header">
+			<h1 {...event.edit.title}>{event.data.title}</h1>
+			<p class="event__meta">
+				{dateText && <time datetime={String(event.data.date)}>{dateText}</time>}
+				{event.data.location && <span>{event.data.location}</span>}
+			</p>
+		</header>
+
+		{event.data.featured_image && (
+			<div class="event__hero" {...event.edit.featured_image}><Image image={event.data.featured_image} priority /></div>
+		)}
+
+		<div class="prose"><PortableText value={event.data.content} /></div>
+
+		{albums.length > 0 && (
+			<section class="event__section">
+				<h2>{t["events.photos"] ?? "Photos"}</h2>
+				{albums.map((album) => (
+					<div class="album">
+						{album.name && <h3>{album.name}</h3>}
+						<ul class="photo-grid">
+							{album.photos.map((photo) => (
+								<li>
+									<button
+										type="button"
+										class="photo-grid__item"
+										data-lightbox-index={photo.index}
+										data-full={photo.src}
+										data-alt={photo.alt}
+										data-caption={photo.caption}
+										aria-label={photo.caption || photo.alt || (t["events.photos"] ?? "Photos")}
+									>
+										<img src={photo.src} alt={photo.alt} loading="lazy" />
+									</button>
+								</li>
+							))}
+						</ul>
+					</div>
+				))}
+			</section>
+		)}
+
+		{videos.length > 0 && (
+			<section class="event__section">
+				<h2>{t["events.videos"] ?? "Videos"}</h2>
+				{videos.map((video) => (
+					<figure class="video">
+						{video.source.kind === "iframe" && (
+							<div class="video__frame">
+								<iframe
+									src={video.source.src}
+									title={video.title || (t["events.videos"] ?? "Videos")}
+									loading="lazy"
+									allowfullscreen
+									referrerpolicy="strict-origin-when-cross-origin"
+								></iframe>
+							</div>
+						)}
+						{video.source.kind === "file" && <video class="video__file" src={video.source.src} controls preload="metadata"></video>}
+						{video.source.kind === "link" && (
+							<a class="btn btn--ghost" href={video.source.href} target="_blank" rel="noopener noreferrer">
+								{video.title || (t["events.watch"] ?? "Watch video")}
+							</a>
+						)}
+						{video.title && video.source.kind !== "link" && <figcaption>{video.title}</figcaption>}
+					</figure>
+				))}
+			</section>
+		)}
+	</article>
+
+	{photos.length > 0 && (
+		<dialog id="lightbox" class="lightbox" aria-label={t["events.photos"] ?? "Photos"}>
+			<button type="button" class="lightbox__btn lightbox__close" data-lightbox-close aria-label={t["events.gallery_close"] ?? "Close"}>×</button>
+			<button type="button" class="lightbox__btn lightbox__prev" data-lightbox-prev aria-label={t["events.gallery_prev"] ?? "Previous photo"}>‹</button>
+			<img class="lightbox__image" data-lightbox-image alt="" />
+			<p class="lightbox__caption" data-lightbox-caption hidden></p>
+			<button type="button" class="lightbox__btn lightbox__next" data-lightbox-next aria-label={t["events.gallery_next"] ?? "Next photo"}>›</button>
+		</dialog>
+	)}
+</Base>
+
+{photos.length > 0 && <script>import "../../scripts/lightbox";</script>}
+
+<style>
+	.event__header { margin-bottom: 1.5rem; }
+	.event__meta { display: flex; flex-wrap: wrap; gap: 0.25rem 1rem; margin: 0; color: var(--color-text-muted); font-weight: 600; }
+	.event__hero { margin-bottom: 2rem; border-radius: var(--radius); overflow: hidden; }
+	.event__hero :global(img) { width: 100%; height: auto; display: block; }
+	.event__section { margin-top: 2.5rem; padding-top: 1.5rem; border-top: 1px solid var(--color-border); }
+	.event__section h2 { font-size: 1.35rem; }
+	.album { margin-top: 1.25rem; }
+	.album h3 { font-size: 1.05rem; margin-bottom: 0.75rem; }
+	.photo-grid { list-style: none; margin: 0; padding: 0; display: grid; gap: 0.75rem; grid-template-columns: repeat(auto-fill, minmax(min(100%, 9.5rem), 1fr)); }
+	.photo-grid li { min-width: 0; }
+	.photo-grid__item { display: block; width: 100%; aspect-ratio: 1; padding: 0; overflow: hidden; border: 1px solid var(--color-border); border-radius: var(--radius); background: var(--color-surface); cursor: pointer; }
+	.photo-grid__item img { width: 100%; height: 100%; object-fit: cover; transition: transform 0.25s ease; }
+	.photo-grid__item:hover img, .photo-grid__item:focus-visible img { transform: scale(1.06); }
+	.video { margin: 1rem 0 0; }
+	.video__frame { aspect-ratio: 16 / 9; border-radius: var(--radius); overflow: hidden; background: #000; }
+	.video__frame iframe { width: 100%; height: 100%; border: 0; display: block; }
+	.video__file { width: 100%; border-radius: var(--radius); background: #000; }
+	.video figcaption { margin-top: 0.4rem; color: var(--color-text-muted); font-size: 0.9375rem; }
+
+	.lightbox { width: min(92vw, 56rem); height: 85vh; padding: 0; border: 0; border-radius: var(--radius); background: transparent; overflow: visible; }
+	.lightbox::backdrop { background: rgb(0 0 0 / 0.8); }
+	.lightbox[open] { display: flex; flex-direction: column; align-items: center; justify-content: center; }
+	.lightbox__image { max-width: 100%; max-height: calc(100% - 3rem); object-fit: contain; }
+	.lightbox__caption { margin: 0.75rem 0 0; color: #fff; text-align: center; }
+	.lightbox__btn { position: absolute; width: 2.5rem; height: 2.5rem; border: 0; border-radius: 999px; background: rgb(0 0 0 / 0.55); color: #fff; font-size: 1.5rem; line-height: 1; cursor: pointer; }
+	.lightbox__close { top: 0.5rem; inset-inline-end: 0.5rem; }
+	.lightbox__prev { top: 50%; inset-inline-start: 0.5rem; transform: translateY(-50%); }
+	.lightbox__next { top: 50%; inset-inline-end: 0.5rem; transform: translateY(-50%); }
+	:global([dir="rtl"]) .lightbox__prev, :global([dir="rtl"]) .lightbox__next { scale: -1 1; }
+</style>

@@ -1,0 +1,72 @@
+---
+import { getEmDashCollection } from "emdash";
+import { Image } from "emdash/ui";
+import Base from "../../layouts/Base.astro";
+import { localizedHref } from "../../utils/localized-href";
+import { getUiStrings } from "../../utils/ui-strings";
+
+const locale = Astro.locals.locale;
+const t = await getUiStrings(locale);
+const { entries: events, cacheHint } = await getEmDashCollection("events", {
+	locale,
+	status: "published",
+	orderBy: { date: "desc" },
+});
+if (Astro.cache?.enabled) {
+	Astro.cache.set(cacheHint);
+}
+
+// An event stays "upcoming" until the end of the day it takes place.
+const startOfToday = new Date();
+startOfToday.setHours(0, 0, 0, 0);
+const time = (event: (typeof events)[number]): number => new Date(String(event.data.date)).getTime();
+const upcoming = events.filter((e) => time(e) >= startOfToday.getTime()).sort((a, b) => time(a) - time(b));
+const past = events.filter((e) => time(e) < startOfToday.getTime());
+
+const dateFmt = (value: unknown): string =>
+	new Date(String(value)).toLocaleDateString(locale, { year: "numeric", month: "long", day: "numeric" });
+const sections = [
+	{ key: "upcoming", heading: t["events.upcoming"] ?? "Upcoming events", items: upcoming },
+	{ key: "past", heading: t["events.past"] ?? "Past events", items: past },
+].filter((section) => section.items.length > 0);
+---
+
+<Base title={t["events.heading"] ?? "Events"}>
+	<h1>{t["events.heading"] ?? "Events"}</h1>
+	<p class="lead">{t["events.intro"] ?? "What we are planning, and what we have done together."}</p>
+
+	{sections.length === 0 && <p class="lead">{t["events.empty"] ?? "No events yet. Check back soon."}</p>}
+
+	{sections.map((section) => (
+		<section class="events-section">
+			<h2>{section.heading}</h2>
+			<div class="card-grid">
+				{section.items.map((event) => (
+					<article class="card event-card">
+						{event.data.featured_image && <Image image={event.data.featured_image} />}
+						<time datetime={String(event.data.date)}>{dateFmt(event.data.date)}</time>
+						<h3 {...event.edit.title}>
+							<a class="card__link" href={localizedHref(locale, `/events/${event.data.slug ?? event.id}`)}>{event.data.title}</a>
+						</h3>
+						{event.data.location && <p class="location">{event.data.location}</p>}
+						{event.data.excerpt && <p>{event.data.excerpt}</p>}
+					</article>
+				))}
+			</div>
+		</section>
+	))}
+</Base>
+
+<style>
+	.lead { color: var(--color-text-muted); margin-bottom: 2rem; }
+	.events-section { margin-bottom: 3rem; }
+	.events-section h2 { margin-bottom: 1rem; }
+	.event-card { position: relative; }
+	.event-card:hover, .event-card:focus-within { border-color: var(--color-accent); }
+	.event-card :global(img) { width: 100%; height: 11rem; object-fit: cover; border-radius: var(--radius); margin-bottom: 0.75rem; }
+	.event-card time { display: block; font-size: 0.875rem; font-weight: 600; color: var(--color-accent); }
+	.event-card h3 { font-size: 1.2rem; margin: 0.25rem 0; }
+	.card__link { color: inherit; text-decoration: none; }
+	.card__link::after { content: ""; position: absolute; inset: 0; }
+	.location { color: var(--color-text-muted); font-size: 0.9375rem; margin: 0 0 0.5rem; }
+</style>

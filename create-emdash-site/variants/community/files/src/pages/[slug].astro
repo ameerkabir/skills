@@ -3,6 +3,7 @@ import { getEmDashEntry, getSeoMeta, decodeSlug, getSiteSettings } from "emdash"
 import { PortableText } from "emdash/ui";
 import Base from "../layouts/Base.astro";
 import { resolveSiteIdentity } from "../utils/site-identity";
+import { getSiteOrigin } from "../utils/site-url";
 import { localizedHref } from "../utils/localized-href";
 
 const locale = Astro.locals.locale;
@@ -18,7 +19,7 @@ if (Astro.cache?.enabled) {
 	Astro.cache.set(cacheHint);
 }
 const { siteTitle } = resolveSiteIdentity(await getSiteSettings(), locale);
-const seo = getSeoMeta(page, { siteTitle, siteUrl: Astro.url.origin, path: `/${slug}` });
+const seo = getSeoMeta(page, { siteTitle, siteUrl: getSiteOrigin(Astro.url.origin), path: localizedHref(locale, `/${slug}`).replace(/\/$/, "") });
 ---
 
 <Base title={page.data.title} description={seo.description} canonical={seo.canonical} content={{ collection: "pages", id: page.data.id, slug }}>
