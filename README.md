@@ -5,6 +5,7 @@ Agent skills (Claude Code / any agent that reads `SKILL.md`).
 | Skill | What it does |
 | --- | --- |
 | [`create-emdash-site`](create-emdash-site/SKILL.md) | Scaffold a new EmDash CMS site on the latest release from a variant, then create its GitHub repo, CI/CD and launch board. Variants: `community` (bilingual en/ar: home with hero, about, services, news, contact, member registration). |
+| [`emdash-seo-launch`](emdash-seo-launch/SKILL.md) | Take a deployed EmDash site live in search: audit what a crawler sees (`seo-check`), turn off staging `noindex`, fix the sitemap, set up an API token, verify and submit in Google Search Console, read the indexing status. |
 | [`connect-domain`](connect-domain/SKILL.md) | Connect a registrar domain (Namecheap etc.) to a Cloudflare Worker: snapshot DNS, create the zone, copy email records, switch nameservers, attach the Worker, `www` redirect, verify. Registration and email stay at the registrar. |
 
 ## Install
@@ -14,6 +15,7 @@ Symlink a skill into your user skills directory so it is available in every proj
 ```bash
 git clone https://github.com/ameerkabir/skills.git ~/code/skills
 ln -s ~/code/skills/create-emdash-site ~/.claude/skills/create-emdash-site
+ln -s ~/code/skills/emdash-seo-launch ~/.claude/skills/emdash-seo-launch
 ```
 
 Then run `/create-emdash-site` in Claude Code.
